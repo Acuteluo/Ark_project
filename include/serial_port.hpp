@@ -18,7 +18,7 @@ public:
     
     // 发送数据包
     bool sendData(const SendPacket& packet);
-
+ 
     // 检查串口是否处于打开状态
     bool isOpen() const;
 

@@ -88,7 +88,7 @@ void SerialPort::closePort()
 
 bool SerialPort::sendData(const SendPacket& packet)
 {
-    if (!is_open_)
+    if (!is_open_) 
     {
         std::cout << "[SERIAL ERROR] 底层发送时发现串口未打开！" << std::endl;
         return false;

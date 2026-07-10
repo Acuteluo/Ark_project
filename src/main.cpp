@@ -206,7 +206,7 @@ int main()
         (char)((ex & 0XFF0000) >> 16),
         (char)((ex & 0XFF000000) >> 24),
         '\0'
-    };
+    }; 
 
     // 获取其他可能有用的图像控制参数 (不同相机支持度不同，不支持通常返回 -1 或 0)
     double auto_focus = cap.get(cv::CAP_PROP_AUTOFOCUS);
@@ -253,7 +253,7 @@ int main()
     
     // 5. 启动子线程  
     std::thread vision_thread(VisionThread, &scanner); // 启动视觉识别线程
-    std::thread serial_thread(SerialThread, &serial);  // 启动串口发送线程
+    std::thread serial_thread(SerialThread, &serial);  // 启动串口发送线程 
 
     std::cout << "[INFO] 系统启动！相机、视觉、串口多线程运行中..." << std::endl;
 

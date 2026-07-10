@@ -26,7 +26,7 @@ public:
     // 处理单帧图像，返回是否成功识别到至少一个二维码
     bool processFrame(cv::Mat& frame);
 
-    // 【新增】提供外部获取历史记录的接口
+    // 【新增】提供外部获取历史记录的接口 
     std::vector<std::string>& getInfos();
 
 private:

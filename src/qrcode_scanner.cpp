@@ -5,7 +5,7 @@ QRCodeScanner::QRCodeScanner()
     // 构造函数留空，初始化工作交由 initModel 完成
 }
 
-QRCodeScanner::~QRCodeScanner()
+QRCodeScanner::~QRCodeScanner() 
 {
     // 智能指针会自动释放内存，无需手动 delete
 }

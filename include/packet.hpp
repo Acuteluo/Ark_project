@@ -8,7 +8,7 @@
 
 struct SendPacket
 {
-    uint8_t header = 0xEF; // 帧头
+    uint8_t header = 0xEF; // 帧头 
     
     // --- 有效数据起 ---
     // 暂定发送 1 个 uint8_t 数据，后期可根据具体需求修改为其他定长数组
