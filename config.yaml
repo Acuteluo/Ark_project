@@ -1,0 +1,15 @@
+%YAML:1.0
+---
+# 相机设置
+Camera:
+  DeviceID: 2          # 笔记本自带摄像头通常为0，外接USB可能为1或2
+  Width: 1280          # 宽度 (1080p)
+  Height: 720         # 高度 (1080p)
+  Format: "MJPG"       # 强制使用 MJPG 压缩流以突破 USB 2.0 带宽限制获取高帧率
+
+# 模型路径设置
+Model:
+  DetectPrototxt: "../models/detect.prototxt"
+  DetectCaffe: "../models/detect.caffemodel"
+  SrPrototxt: "../models/sr.prototxt"
+  SrCaffe: "../models/sr.caffemodel"

@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/cly/Ark_project/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
