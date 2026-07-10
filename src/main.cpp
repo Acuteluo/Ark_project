@@ -211,6 +211,12 @@ int main()
     std::string detect_caffe = (std::string)fs["Model"]["DetectCaffe"];
     std::string sr_prototxt = (std::string)fs["Model"]["SrPrototxt"];
     std::string sr_caffe = (std::string)fs["Model"]["SrCaffe"];
+
+    // 解析串口参数
+    std::string port_name = (std::string)fs["Port"]["PortName"];
+    int baud_rate = (int)fs["Port"]["BaudRate"];
+    SerialPort serial(port_name, baud_rate);
+
     fs.release();
 
     std::cout << "================= [CONFIG LOADED] =================" << std::endl;
@@ -286,9 +292,6 @@ int main()
     std::cout << std::endl;
 
     // 4. 读取串口配置，并初始化串口
-    std::string port_name = (std::string)fs["Port"]["PortName"];
-    int baud_rate = (int)fs["Port"]["BaudRate"];
-    SerialPort serial(port_name, baud_rate);
     
     std::cout << "================= [SERIAL STATUS] =================" << std::endl;
     bool is_serial_open = serial.OpenPort();
