@@ -21,21 +21,21 @@ bool QRCodeScanner::initModel(const std::string& detect_prototxt,
         detector = cv::makePtr<cv::wechat_qrcode::WeChatQRCode>(
             detect_prototxt, detect_caffe, sr_prototxt, sr_caffe);
         
-        std::cout << "[INFO] 微信二维码模型加载成功！" << std::endl;
+        std::cout << "[qrcode_scanner.cpp] 微信二维码模型加载成功" << std::endl;
         return true;
     }
     catch (const cv::Exception& e)
     {
-        std::cerr << "[ERROR] 模型加载失败，请检查路径是否正确！ OpenCV 报错: " << e.what() << std::endl;
+        std::cerr << "[qrcode_scanner.cpp] 模型加载失败, OpenCV 报错: " << e.what() << std::endl;
         return false;
     }
 }
 
-bool QRCodeScanner::processFrame(cv::Mat& frame)
+bool QRCodeScanner::processFrame(cv::Mat& frame, bool draw_result)
 {
     if (detector.empty())
     {
-        std::cerr << "[ERROR] 检测器未初始化！" << std::endl;
+        std::cerr << "[qrcode_scanner.cpp] 检测器未初始化！" << std::endl;
         return false;
     }
 
@@ -51,7 +51,12 @@ bool QRCodeScanner::processFrame(cv::Mat& frame)
     if (!decoded_info.empty())
     {
         restoreInfos(frame, decoded_info); 
-        drawResults(frame, points, decoded_info);
+
+        if (draw_result)
+        {
+            drawResults(frame, points, decoded_info);
+        }
+
         return true;
     }
 
@@ -74,24 +79,17 @@ void QRCodeScanner::restoreInfos(cv::Mat& frame, const std::vector<std::string>&
 
         auto it = std::find(infos_.begin(), infos_.end(), info);
 
-        // 判断迭代器是否等于 end()，如果等于说明没找到，也就是没记录过，那就记录
+        // 判断迭代器是否等于 end()，如果等于说明没找到，也就是没记录过，这是新的二维码！！那就记录
         if (it == infos_.end()) 
         {
             infos_.push_back(info);
+            std::cout << "[DETECTED] QRCode " << infos_.size() << ": " << info << std::endl;
         } 
     }
     
     // 检查是否已经记录到 4 个二维码
     if (infos_.size() == 4)
     {
-        std::cout << "[FINISHED] 历史记录已经记录到 4 个二维码 !" << std::endl;
-
-        std::cout << "[INFO] 历史记录是: " << std::endl;
-        for (size_t i = 0; i < infos_.size(); i++)
-        {
-            std::cout << infos_[i] << " ";
-        }
-        std::cout << std::endl;
         
         // todo: 下面可以写拼接组合的代码
     }
@@ -143,19 +141,19 @@ void QRCodeScanner::drawResults(cv::Mat& frame,
                     1.5, green, 2, cv::LINE_AA);
         
         // 在终端同步输出信息，方便调试
-        std::cout << "[DETECTED] QRCode " << i + 1 << ": " << info << std::endl;
+        // std::cout << "[DETECTED] QRCode " << i + 1 << ": " << info << std::endl;
     }
 
-    // 显示目前检测到的二维码数量
+    // 在图上显示目前检测到的二维码数量
     cv::Point2f printinfo_position(10, 50);
     std::string printinfo;
     if (infos_.size() < 4)
     {
-        printinfo = "has detected " + std::to_string(infos_.size()) + " / 4 QRcodes";
+        printinfo = "Detected num: " + std::to_string(infos_.size());
     }
     else
     {
-        printinfo = "detected finished";
+        printinfo = "Detected finished";
     }
     cv::putText(frame, printinfo, printinfo_position, cv::FONT_HERSHEY_SIMPLEX, 
                     1.5, green, 2, cv::LINE_AA);

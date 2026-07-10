@@ -5,24 +5,24 @@
 #include <unistd.h>  // UNIX 标准函数定义
 
 SerialPort::SerialPort(const std::string& port_name, int baud_rate)
-    : fd_(-1), port_name_(port_name), baud_rate_(baud_rate), is_open_(false)
+    : fd_(-1), port_name_(port_name), baud_rate_(baud_rate), is_open_(false), prev_retry_time_(std::chrono::steady_clock::now())
 {
 
 }
 
 SerialPort::~SerialPort()
 {
-    closePort();
+    ClosePort();
 }
 
-bool SerialPort::openPort()
+bool SerialPort::OpenPort()
 {
     // O_RDWR: 读写模式 | O_NOCTTY: 不作为控制终端 | O_NDELAY: 非阻塞
     fd_ = open(port_name_.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
     
     if (fd_ == -1)
     {
-        std::cerr << "[SERIAL ERROR] 无法打开串口: " << port_name_ << std::endl;
+        std::cout << "[serial_port.cpp] 无法打开串口" << port_name_ << std::endl;
         return false;
     }
 
@@ -65,32 +65,32 @@ bool SerialPort::openPort()
     tcflush(fd_, TCIFLUSH);
     if (tcsetattr(fd_, TCSANOW, &options) != 0)
     {
-        std::cerr << "[SERIAL ERROR] 串口参数设置失败！" << std::endl;
+        std::cout << "[serial_port.cpp] 串口参数设置失败！" << std::endl;
         close(fd_);
         return false;
     }
 
     is_open_ = true;
-    std::cout << "[INFO] 串口 " << port_name_ << " 打开成功，波特率: " << baud_rate_ << std::endl;
+    std::cout << "[serial_port.cpp] 串口 " << port_name_ << " 打开成功，波特率: " << baud_rate_ << std::endl;
     return true;
 }
 
-void SerialPort::closePort()
+void SerialPort::ClosePort()
 {
     if (is_open_ && fd_ != -1)
     {
         close(fd_);
         is_open_ = false;
         fd_ = -1;
-        std::cout << "[INFO] 串口已关闭。" << std::endl;
+        std::cout << "[serial_port.cpp] 串口已关闭。" << std::endl;
     }
 }
 
-bool SerialPort::sendData(const SendPacket& packet)
+bool SerialPort::SendData(const SendPacket& packet)
 {
     if (!is_open_) 
     {
-        std::cout << "[SERIAL ERROR] 底层发送时发现串口未打开！" << std::endl;
+        std::cout << "[serial_port.cpp] 发送时发现串口未打开！" << std::endl;
         return false;
     }
 
@@ -103,13 +103,37 @@ bool SerialPort::sendData(const SendPacket& packet)
     }
     else
     {
-        std::cerr << "[SERIAL WARNING] 数据发送不完整或失败！" << std::endl;
-        // 可以在这里尝试重新打开串口 reopenPort() 逻辑
+        std::cout << "[serial_port.cpp] 数据发送不完整或失败！" << std::endl;
+
+        // 尝试重新打开串口 reopenPort() 
+        return ReopenPort();
+    }
+}
+
+bool SerialPort::IsOpened()
+{
+    if (is_open_)
+    {
+        return true;
+    }
+    else
+    {
+        // 如果串口未打开，尝试每隔 5 秒重新打开一次
+        auto now = std::chrono::steady_clock::now();
+        auto elapsed = std::chrono::duration<double>(now - prev_retry_time_).count();
+
+        if (elapsed >= 3.0)
+        {
+            prev_retry_time_ = now;
+            ReopenPort();
+        }
         return false;
     }
 }
 
-bool SerialPort::isOpen() const
+bool SerialPort::ReopenPort()
 {
-    return is_open_;
+    std::cout << "[serial_port.cpp] 尝试重新打开串口..." << std::endl;
+    ClosePort();
+    return OpenPort();
 }

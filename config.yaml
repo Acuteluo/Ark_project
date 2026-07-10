@@ -2,10 +2,12 @@
 ---
 # 相机设置
 Camera:
-  DeviceID: 2          # 笔记本自带摄像头通常为0，外接USB可能为1或2
-  Width: 1280          # 宽度 (1080p)
-  Height: 720         # 高度 (1080p)
-  Format: "MJPG"       # 强制使用 MJPG 压缩流以突破 USB 2.0 带宽限制获取高帧率
+  DeviceID: 2         # 笔记本自带摄像头通常为 0，外接USB可能为 1 或 2
+  Width: 1080         # 宽度 (1920 / 1080 / 800 / 640)
+  Height: 720         # 高度 (1080 / 720  / 600 / 480)
+  Format: "MJPG"      # 强制使用 MJPG 压缩流以突破 USB 2.0 带宽限制获取高帧率
+  Brightness: 0       # 亮度 [-64, 64]
+  Contrast: 0         # 对比度 [0, 95]
 
 # 模型路径设置
 Model:
@@ -13,3 +15,12 @@ Model:
   DetectCaffe: "../models/detect.caffemodel"
   SrPrototxt: "../models/sr.prototxt"
   SrCaffe: "../models/sr.caffemodel"
+
+# 串口设置
+Port:
+  PortName: "/dev/ttyACM0"  # 串口设备名称
+  BaudRate: 115200          # 波特率
+
+# 模式设置
+Mode:
+  PCMode: 0

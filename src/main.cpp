@@ -5,10 +5,15 @@
 #include <condition_variable>
 #include <atomic>
 #include <chrono>
+#include <csignal> // 引入信号处理，用于树莓派无头模式下的 Ctrl+C 退出
 
 #include "qrcode_scanner.hpp"
 #include "serial_port.hpp"
 
+// ================= 运行模式配置 =================
+// true : 模式① 电脑端联调模式（显示UI画面，带有深拷贝与画框）
+// false: 模式② 树莓派部署模式（无UI，极致零拷贝，不进行画面渲染）
+bool g_show_gui;
 
 // ================= 全局共享数据与锁 =================
 struct SharedData
@@ -32,10 +37,22 @@ std::mutex g_mtx;
 std::condition_variable g_cv;
 std::atomic<bool> g_running{true}; // 控制所有线程退出的原子变量
 
+// 捕获 Ctrl+C 信号，确保无UI模式下能优雅退出
+void signalHandler(int signum)
+{
+    std::cout << std::endl;
+    std::cout << "[main.cpp] 捕捉到退出信号(SIGINT)，准备退出程序..." << std::endl;
+    g_running = false;
+}
+
 // ================= 子线程 A: 视觉识别线程 =================
 void VisionThread(QRCodeScanner* scanner)
 {
     cv::Mat process_frame;
+
+    // --- 【新增】帧率统计相关变量 ---
+    int frame_count = 0;
+    auto fps_start_time = std::chrono::steady_clock::now();
 
     while (g_running)
     {
@@ -46,20 +63,44 @@ void VisionThread(QRCodeScanner* scanner)
 
             if (!g_running) break;
 
-            // 拷贝图片到本线程，然后立即释放锁，不阻塞主线程读相机
-            process_frame = g_data.current_frame.clone();
+            if (g_show_gui) 
+            {
+                // 电脑模式：深拷贝图片到本线程，不阻塞主线程读相机，保留用于显示的帧
+                process_frame = g_data.current_frame.clone();
+            } 
+            else 
+            {
+                // 树莓派模式：【零拷贝】直接交换指针，极大节省时间和CPU
+                cv::swap(process_frame, g_data.current_frame);
+            }
+
             g_data.frame_updated = false;
         }
 
         // 进行二维码识别
         if (!process_frame.empty())
         {
-            // 处理图像（画框、存字符串操作均在内部完成，直接修改了 process_frame）
-            scanner->processFrame(process_frame);
+            // 处理图像，如果 g_show_gui 那就直接修改
+            scanner->processFrame(process_frame, g_show_gui);
 
-            // 再次加锁，将画好框的图传回给主线程用于显示，同时更新状态
-            std::lock_guard<std::mutex> lock(g_mtx);
-            g_data.display_frame = process_frame.clone(); // 传回 UI 渲染图
+            // 如果在电脑模式下，就再次加锁，将画好框的图传回给主线程用于显示，同时更新状态
+            if (g_show_gui) 
+            {
+                std::lock_guard<std::mutex> lock(g_mtx);
+                g_data.display_frame = process_frame.clone(); // 传回 UI 渲染图
+            }
+
+            // 获取当前时间，并计算与 start_time 的差值
+            ++frame_count;
+            auto fps_current_time = std::chrono::steady_clock::now();
+            double elapsed_seconds = std::chrono::duration<double>(fps_current_time - fps_start_time).count();
+            if (elapsed_seconds >= 0.50) 
+            {
+                double fps = frame_count / elapsed_seconds;
+                std::cout << "[VISION THREAD] 当前计算帧率: " << fps << " FPS" << std::endl;
+                frame_count = 0;
+                fps_start_time = fps_current_time;
+            }
 
             // 如果刚好集齐 4 个，且尚未触发过 4 个二维码的 ready
             if (scanner->getInfos().size() == 4 && !g_data.is_4_qr_ready) 
@@ -67,12 +108,12 @@ void VisionThread(QRCodeScanner* scanner)
                 g_data.is_4_qr_ready = true;
                 g_data.qr_infos = scanner->getInfos(); // 把字符串数组拷贝进共享内存
 
-                // 获取当前时间，并计算与 start_time 的差值
-                g_data.end_time = std::chrono::steady_clock::now();
-                double elapsed_seconds = std::chrono::duration<double>(g_data.end_time - g_data.start_time).count();
+                // 保存检测出来的时刻
+                g_data.end_time = fps_current_time;
+                double finally_period_seconds = std::chrono::duration<double>(g_data.end_time - g_data.start_time).count();
 
-                std::cout << "[VISION THREAD] 成功集齐 4 个二维码，准备让串口线程发送" << std::endl;
-                std::cout << "[PERFORMANCE] 从系统启动到集齐 4 个二维码耗时: " << elapsed_seconds << " s" << std::endl;
+                std::cout << "[VISION THREAD] 成功集齐 4 个二维码" << std::endl;
+                std::cout << "[VISION THREAD] 从系统启动到集齐 4 个二维码耗时: " << finally_period_seconds << " s" << std::endl;
             }
         }
     }
@@ -85,9 +126,8 @@ void SerialThread(SerialPort* serial)
 {
     SendPacket packet;
 
-    // 初始化数据包，默认状态 0x00
-    packet.data = 0x00; 
-
+    packet.data = 0x00; // 初始化数据包，默认状态 0x00
+    std::string prev_message = "", temp_message = ""; // 上一次打印的提示信息，这一次打印的提示信息
     std::vector<std::string> local_infos; // 暂存从共享内存拿出的字符串
 
     while (g_running)
@@ -101,13 +141,13 @@ void SerialThread(SerialPort* serial)
 
             if (ready_to_send)
             {
-                std::cout << "[VISION THREAD] 集齐了 4 个二维码，准备发送！" << std::endl;
+                // std::cout << "[VISION THREAD] 集齐了 4 个二维码，准备发送！" << std::endl;
                 local_infos = g_data.qr_infos; // 安全地将字符串数组拷贝出来
             }
         }
 
         // 如果集齐了 4 个二维码，且串口已打开
-        if (serial->isOpen())
+        if (serial->IsOpened())
         {
             if (ready_to_send)
             {
@@ -118,14 +158,20 @@ void SerialThread(SerialPort* serial)
                 packet.data = 0x09; // 不 ok    
             }
 
-            serial->sendData(packet);
-            std::cout << "[SERIAL] 发送了: " << std::hex << static_cast<int>(packet.data) << std::dec << std::endl;
+            serial->SendData(packet);
+            temp_message = "[SERIAL THREAD] 串口线程正在发送 " + std::to_string(static_cast<int>(packet.data));
         }
         else
         {
-            std::cout << "[SERIAL] 串口线程发现串口未打开" << std::endl;
+            temp_message = "[SERIAL THREAD] 串口线程发现串口未打开";
         }
-        
+
+        // 假如这一次和上一次打印的提示信息不一样，就打印出来，一样就不打印，避免重复刷屏
+        if (temp_message != prev_message)
+        {
+            std::cout << temp_message << std::endl;
+            prev_message = temp_message;
+        }
 
         // 控制发送频率为 100Hz (休眠 10ms)
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -136,21 +182,28 @@ void SerialThread(SerialPort* serial)
 
 int main()
 {
+    // 注册系统信号，方便在树莓派后台运行时 Ctrl+C 正常关闭硬件
+    signal(SIGINT, signalHandler);
+
     // 1. 读取配置文件
     std::string config_path = "../config.yaml";
     cv::FileStorage fs(config_path, cv::FileStorage::READ);
     
     if (!fs.isOpened())
     {
-        std::cerr << "[ERROR] 无法打开配置文件: " << config_path << std::endl;
+        std::cout << "[main.cpp] 无法打开配置文件: " << config_path << std::endl;
         return -1;
     }
 
-    // 解析相机参数
+    // 解析 config 模式参数
+    g_show_gui = (int)fs["Mode"]["PCMode"];
+
+    // 解析 config 相机参数
     int camera_id = (int)fs["Camera"]["DeviceID"];
     int cam_width = (int)fs["Camera"]["Width"];
     int cam_height = (int)fs["Camera"]["Height"];
-    int cam_fps = (int)fs["Camera"]["FPS"];
+    int cam_brightness = (int)fs["Camera"]["Brightness"];
+    int cam_contrast = (int)fs["Camera"]["Contrast"];
     std::string cam_format = (std::string)fs["Camera"]["Format"];
 
     // 解析模型路径
@@ -161,17 +214,20 @@ int main()
     fs.release();
 
     std::cout << "================= [CONFIG LOADED] =================" << std::endl;
+    std::cout << (g_show_gui ? "  Mode: PC" : "  Mode: Raspberry Pi") << std::endl;
     std::cout << "  Camera ID : " << camera_id << std::endl;
-    std::cout << "  Target Res: " << cam_width << "x" << cam_height << " @ " << cam_fps << " FPS" << std::endl;
+    std::cout << "  Target Res: " << cam_width << "x" << cam_height << std::endl;
     std::cout << "  Target Fmt: " << cam_format << std::endl;
-    std::cout << "  Model Path: " << detect_prototxt << " (等4个文件)" << std::endl;
+    std::cout << "  Target Brightness: " << cam_brightness << std::endl;
+    std::cout << "  Target Contrast  : " << cam_contrast << std::endl;
+    std::cout << "  Model Path: " << detect_prototxt << " | " << detect_caffe << " | " << sr_prototxt << " | " << sr_caffe << std::endl;
     std::cout << "===================================================" << std::endl;
 
     // 2. 初始化二维码扫描器
     QRCodeScanner scanner;
     if (!scanner.initModel(detect_prototxt, detect_caffe, sr_prototxt, sr_caffe))
     {
-        std::cerr << "[ERROR] 扫描器初始化失败，程序退出。" << std::endl;
+        std::cout << "[main.cpp] QRCodeScanner scanner initialization failed, exiting program." << std::endl;
         return -1;
     }
 
@@ -179,7 +235,7 @@ int main()
     cv::VideoCapture cap(camera_id);
     if (!cap.isOpened())
     {
-        std::cerr << "[ERROR] 无法打开摄像头, ID: " << camera_id << std::endl;
+        std::cout << "[main.cpp] cap.isOpened() = false, ID: " << camera_id << std::endl;
         return -1;
     }
 
@@ -189,13 +245,16 @@ int main()
     }
     cap.set(cv::CAP_PROP_FRAME_WIDTH, cam_width);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, cam_height);
-    cap.set(cv::CAP_PROP_FPS, cam_fps);
+    cap.set(cv::CAP_PROP_BRIGHTNESS, cam_brightness); // [-64, 64]
+    cap.set(cv::CAP_PROP_CONTRAST, cam_contrast);   // [0, 95]
 
     // ==========================================================
     // 全面获取并打印相机实际生效的参数
     // ==========================================================
     int actual_width = cap.get(cv::CAP_PROP_FRAME_WIDTH);
     int actual_height = cap.get(cv::CAP_PROP_FRAME_HEIGHT);
+    int actual_brightness = cap.get(cv::CAP_PROP_BRIGHTNESS);
+    int actual_contrast = cap.get(cv::CAP_PROP_CONTRAST);
     double actual_fps = cap.get(cv::CAP_PROP_FPS);
     
     // 获取实际的 FourCC 格式并转换为字符串
@@ -209,56 +268,52 @@ int main()
     }; 
 
     // 获取其他可能有用的图像控制参数 (不同相机支持度不同，不支持通常返回 -1 或 0)
-    double auto_focus = cap.get(cv::CAP_PROP_AUTOFOCUS);
     double exposure = cap.get(cv::CAP_PROP_EXPOSURE);
-    double brightness = cap.get(cv::CAP_PROP_BRIGHTNESS);
-    double contrast = cap.get(cv::CAP_PROP_CONTRAST);
     std::string backend_name = cap.getBackendName(); // 例如 V4L2
 
     std::cout << std::endl;
-    std::cout << "================= [CAMERA STATUS] =================" << std::endl;
+    std::cout << "================= [ACTUAL CAMERA STATUS] =================" << std::endl;
     std::cout << "  Backend API   : " << backend_name << std::endl;
     std::cout << "  Resolution    : " << actual_width << "x" << actual_height << std::endl;
     std::cout << "  FPS           : " << actual_fps << std::endl;
     std::cout << "  Video Format  : " << (strlen(actual_fourcc) > 0 ? actual_fourcc : "Unknown") << std::endl;
-    std::cout << "  Auto Focus    : " << (auto_focus == 1 ? "ON" : (auto_focus == 0 ? "OFF" : "Not Supported/Unknown")) << std::endl;
     std::cout << "  Exposure      : " << exposure << std::endl;
-    std::cout << "  Brightness    : " << brightness << std::endl;
-    std::cout << "  Contrast      : " << contrast << std::endl;
-    std::cout << "===================================================" << std::endl;
+    std::cout << "  Brightness    : " << actual_brightness << std::endl;
+    std::cout << "  Contrast      : " << actual_contrast << std::endl;
+    std::cout << "==========================================================" << std::endl;
 
-    std::cout << "[INFO] 相机初始化完毕。按 'ESC' 或 'q' 退出" << std::endl;
+    std::cout << "[main.cpp] 相机初始化完毕, " << (g_show_gui ? "按 'ESC' 或 'q' 退出" : "按 'Ctrl+C' 退出") << std::endl;
+    std::cout << std::endl;
 
-    // 4. 初始化串口
-    std::string port_name = "/dev/ttyACM0";
-    int baud_rate = 115200;
+    // 4. 读取串口配置，并初始化串口
+    std::string port_name = (std::string)fs["Port"]["PortName"];
+    int baud_rate = (int)fs["Port"]["BaudRate"];
     SerialPort serial(port_name, baud_rate);
     
-    std::cout << "\n================= [SERIAL STATUS] =================" << std::endl;
-    bool is_serial_open = serial.openPort();
+    std::cout << "================= [SERIAL STATUS] =================" << std::endl;
+    bool is_serial_open = serial.OpenPort();
     if (is_serial_open)
     {
+        std::cout << "  is_serial_open: SUCCESS" << std::endl;
         std::cout << "  Port Name     : " << port_name << std::endl;
         std::cout << "  Baud Rate     : " << baud_rate << std::endl;
-        std::cout << "  Status        : SUCCESS (Ready to TX/RX)" << std::endl;
     }
     else
     {
-        std::cerr << "  Status        : FAILED! Please check USB connection or dialout permissions." << std::endl;
-        std::cerr << "  Notice        : The system will run in Vision-Only mode." << std::endl;
+        std::cout << "  is_serial_open: FAILED" << std::endl;
     }
-    std::cout << "===================================================" << std::endl << std::endl;
+    std::cout << "===================================================" << std::endl;
+    std::cout << std::endl;
 
      
-    
     // 5. 启动子线程  
     std::thread vision_thread(VisionThread, &scanner); // 启动视觉识别线程
     std::thread serial_thread(SerialThread, &serial);  // 启动串口发送线程 
 
-    std::cout << "[INFO] 系统启动！相机、视觉、串口多线程运行中..." << std::endl;
+    g_data.start_time = std::chrono::steady_clock::now(); // 启动计时
 
-    // 启动计时
-    g_data.start_time = std::chrono::steady_clock::now();
+    std::cout << "[main.cpp] started threads" << std::endl;
+
 
     // 6. 主循环
     cv::Mat frame;
@@ -266,38 +321,53 @@ int main()
     while (g_running)
     {
         cap >> frame;
+        if (frame.empty()) continue; // 防止相机掉线等异常读取空帧崩溃
 
         // 丢进共享内存，通知视觉线程
         {
             std::lock_guard<std::mutex> lock(g_mtx);
-            g_data.current_frame = frame;
-            g_data.frame_updated = true;
 
-            // 如果视觉线程已经处理好了一帧带框的图，就显示带框的，否则显示原图
-            if (!g_data.display_frame.empty()) 
+            if (g_show_gui) 
             {
-                show_frame = g_data.display_frame.clone();
+                // UI模式：必须拷贝，保证识别线程画图时不污染原始流
+                g_data.current_frame = frame.clone();
+                
+                // 如果视觉线程已经处理好了一帧带框的图，就显示带框的，否则显示原图
+                if (!g_data.display_frame.empty()) 
+                {
+                    show_frame = g_data.display_frame.clone();
+                } 
+                else 
+                {
+                    show_frame = frame.clone();
+                }
             } 
             else 
             {
-                show_frame = frame.clone();
+                // 树莓派模式：0拷贝，底层直接接管指针。速度最快。
+                cv::swap(g_data.current_frame, frame);
             }
+            
+            g_data.frame_updated = true;
         }
         g_cv.notify_one();
 
 
-        // 缩放画面以便在普通笔记本屏幕上完整显示 1080p 图像
-        // cv::Mat display_frame;
-        // cv::resize(show_frame, display_frame, cv::Size(960, 540));
-
-        // 显示结果
-        cv::imshow("Ark System", show_frame);
-
-        // 处理键盘交互
-        char key = (char)cv::waitKey(1);
-        if (key == 27 || key == 'q' || key == 'Q')
+        // 根据模式判断是否显示画面
+        if (g_show_gui) 
         {
-            g_running = false;
+            // 显示结果
+            if (!show_frame.empty()) 
+            {
+                cv::imshow("Ark System", show_frame);
+            }
+
+            // 处理键盘交互
+            char key = (char)cv::waitKey(1);
+            if (key == 27 || key == 'q' || key == 'Q')
+            {
+                g_running = false;
+            }
         }
     }
 
@@ -309,7 +379,10 @@ int main()
 
     // 8. 释放资源
     cap.release();
-    cv::destroyAllWindows();
-
+    if (g_show_gui)
+    {
+        cv::destroyAllWindows();
+    }
+    
     return 0;
 }

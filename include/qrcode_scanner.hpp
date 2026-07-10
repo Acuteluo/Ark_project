@@ -23,10 +23,10 @@ public:
                    const std::string& sr_prototxt,
                    const std::string& sr_caffe);
 
-    // 处理单帧图像，返回是否成功识别到至少一个二维码
-    bool processFrame(cv::Mat& frame);
+    // 处理单帧图像，返回是否成功识别到至少一个二维码，draw_result参数决定是否要在原图上进行渲染
+    bool processFrame(cv::Mat& frame, bool draw_result = true);
 
-    // 【新增】提供外部获取历史记录的接口 
+    // 提供外部获取历史记录的接口 
     std::vector<std::string>& getInfos();
 
 private:
