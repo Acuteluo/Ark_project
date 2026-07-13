@@ -27,7 +27,7 @@ public:
     bool processFrame(cv::Mat& frame, bool draw_result = true);
 
     // 提供外部获取历史记录的接口 
-    std::vector<std::string>& getInfos();
+    std::pair<uint8_t, uint8_t> getuint8t();
 
 private:
     // 微信二维码检测器智能指针
@@ -38,11 +38,15 @@ private:
                      const std::vector<cv::Mat>& points, 
                      const std::vector<std::string>& decoded_info);
 
-    // 存储目前检测的信息，并检测目前是否已经检测够 4 个二维码信息，在左上角提示
-    void restoreInfos(cv::Mat& frame, const std::vector<std::string>& decoded_info);
+    // 解码目前检测的信息，并检测目前是否已经解码信息，在左上角提示
+    void decodeColorInfos(cv::Mat& frame, const std::vector<std::string>& decoded_info);
 
-    // 存储历史识别结果
-    std::vector<std::string> infos_;
+    // 存储目标 uint8t 信息
+    uint8_t ultimately_basic_color_ = 0x00;
+    uint8_t ultimately_core_color_ = 0x00;
+
+    // 颜色映射表
+    std::string colors[4] = {"", "Red", "Yellow", "Blue"};
 };
 
 #endif // QRCODE_SCANNER_HPP

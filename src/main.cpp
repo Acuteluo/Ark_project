@@ -25,7 +25,7 @@ struct SharedData
     bool is_4_qr_ready = false;    // 标志位：是否集齐了 4 个二维码
 
     // 将解码出的信息存在这里供串口线程计算使用
-    std::vector<std::string> qr_infos; 
+    std::pair<uint8_t, uint8_t> qr_infos; 
 
     // 记录系统的启动时刻与集齐 4 个二维码的结束时刻
     std::chrono::steady_clock::time_point start_time;
@@ -102,18 +102,18 @@ void VisionThread(QRCodeScanner* scanner)
                 fps_start_time = fps_current_time;
             }
 
-            // 如果刚好集齐 4 个，且尚未触发过 4 个二维码的 ready
-            if (scanner->getInfos().size() == 4 && !g_data.is_4_qr_ready) 
+            // 如果信息已经解码，且尚未触发过 4 个二维码的 ready
+            if (scanner->getuint8t().first != 0x00 && scanner->getuint8t().second != 0x00 && !g_data.is_4_qr_ready) 
             {
                 g_data.is_4_qr_ready = true;
-                g_data.qr_infos = scanner->getInfos(); // 把字符串数组拷贝进共享内存
+                g_data.qr_infos = scanner->getuint8t(); // 把字符串数组拷贝进共享内存
 
                 // 保存检测出来的时刻
                 g_data.end_time = fps_current_time;
                 double finally_period_seconds = std::chrono::duration<double>(g_data.end_time - g_data.start_time).count();
 
-                std::cout << "[VISION THREAD] 成功集齐 4 个二维码" << std::endl;
-                std::cout << "[VISION THREAD] 从系统启动到集齐 4 个二维码耗时: " << finally_period_seconds << " s" << std::endl;
+                std::cout << "[VISION THREAD] 成功解码信息" << std::endl;
+                std::cout << "[VISION THREAD] 从系统启动到解码信息耗时: " << finally_period_seconds << " s" << std::endl;
             }
         }
     }
@@ -126,9 +126,8 @@ void SerialThread(SerialPort* serial)
 {
     SendPacket packet;
 
-    packet.data = 0x00; // 初始化数据包，默认状态 0x00
     std::string prev_message = "", temp_message = ""; // 上一次打印的提示信息，这一次打印的提示信息
-    std::vector<std::string> local_infos; // 暂存从共享内存拿出的字符串
+    std::pair<uint8_t, uint8_t> local_infos = {0x00, 0x00}; // 暂存从共享内存拿出的 uint8_t 
 
     while (g_running)
     {
@@ -146,24 +145,34 @@ void SerialThread(SerialPort* serial)
             }
         }
 
-        // 如果集齐了 4 个二维码，且串口已打开
-        if (serial->IsOpened())
+        // 先根据 ready_to_send 的状态来设置数据包内容
+        if (ready_to_send)
         {
-            if (ready_to_send)
-            {
-                packet.data = 0x01; // 代表状态 OK
-            }
-            else
-            {
-                packet.data = 0x09; // 不 ok    
-            }
-
-            serial->SendData(packet);
-            temp_message = "[SERIAL THREAD] 串口线程正在发送 " + std::to_string(static_cast<int>(packet.data));
+            packet.data1 = local_infos.first; // 代表状态 OK
+            packet.data2 = local_infos.second;
         }
         else
         {
-            temp_message = "[SERIAL THREAD] 串口线程发现串口未打开";
+            packet.data1 = 0xFF; // 不 ok
+            packet.data2 = 0xFF;
+        }
+
+        // 如果信息已经ok，且串口已打开，就发送！
+        if (serial->IsOpened())
+        {
+            serial->SendData(packet);
+            temp_message = "[SERIAL THREAD] 串口线程正在发送 " + std::to_string(static_cast<int>(packet.data1)) + " and " + std::to_string(static_cast<int>(packet.data2));
+        }
+        else
+        {
+            if (ready_to_send)
+            {
+                temp_message = "[SERIAL THREAD] 串口未打开，已 识别信息，欲发送 " + std::to_string(static_cast<int>(packet.data1)) + " and " + std::to_string(static_cast<int>(packet.data2));
+            }
+            else
+            {
+                temp_message = "[SERIAL THREAD] 串口未打开, 未 识别信息，欲发送 " + std::to_string(static_cast<int>(packet.data1)) + " and " + std::to_string(static_cast<int>(packet.data2));
+            }
         }
 
         // 假如这一次和上一次打印的提示信息不一样，就打印出来，一样就不打印，避免重复刷屏

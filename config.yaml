@@ -3,7 +3,7 @@
 # 相机设置
 Camera:
   DeviceID: 0         # 笔记本自带摄像头通常为 0，外接USB相机为 2，树莓派为 0
-  Width: 1080         # 宽度 (1920 / 1080 / 800 / 640)
+  Width: 1280         # 宽度 (1920 / 1280 / 800 / 640)
   Height: 720         # 高度 (1080 / 720  / 600 / 480)
   Format: "MJPG"      # 强制使用 MJPG 压缩流以突破 USB 2.0 带宽限制获取高帧率
   Brightness: 0       # 亮度 [-64, 64]
@@ -21,6 +21,6 @@ Port:
   PortName: "/dev/ttyACM0"  # 串口设备名称
   BaudRate: 115200          # 波特率
 
-# 模式设置
+# 模式设置 0=树莓派 1=PC
 Mode:
   PCMode: 0
