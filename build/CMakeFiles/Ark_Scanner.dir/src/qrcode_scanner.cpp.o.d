@@ -1,6 +1,6 @@
 CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o: \
  /home/cly/Ark_project/src/qrcode_scanner.cpp /usr/include/stdc-predef.h \
- /home/cly/Ark_project/src/../include/qrcode_scanner.hpp \
+ /home/cly/Ark_project/include/qrcode_scanner.hpp \
  /usr/local/include/opencv4/opencv2/opencv.hpp \
  /usr/local/include/opencv4/opencv2/opencv_modules.hpp \
  /usr/local/include/opencv4/opencv2/core.hpp \
@@ -339,4 +339,5 @@ CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o: \
  /usr/local/include/opencv4/opencv2/video.hpp \
  /usr/local/include/opencv4/opencv2/video/tracking.hpp \
  /usr/local/include/opencv4/opencv2/video/background_segm.hpp \
- /usr/local/include/opencv4/opencv2/wechat_qrcode.hpp
+ /usr/local/include/opencv4/opencv2/wechat_qrcode.hpp \
+ /home/cly/Ark_project/include/color.hpp

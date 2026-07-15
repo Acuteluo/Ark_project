@@ -3,6 +3,7 @@
 
 CMakeFiles/Ark_Scanner.dir/src/main.cpp.o
  /home/cly/Ark_project/src/main.cpp
+ /home/cly/Ark_project/include/color.hpp
  /home/cly/Ark_project/include/packet.hpp
  /home/cly/Ark_project/include/qrcode_scanner.hpp
  /home/cly/Ark_project/include/serial_port.hpp
@@ -437,6 +438,7 @@ CMakeFiles/Ark_Scanner.dir/src/main.cpp.o
 
 CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o
  /home/cly/Ark_project/src/qrcode_scanner.cpp
+ /home/cly/Ark_project/include/color.hpp
  /home/cly/Ark_project/include/qrcode_scanner.hpp
  /usr/include/alloca.h
  /usr/include/asm-generic/errno-base.h
@@ -833,6 +835,7 @@ CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o
 
 CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.o
  /home/cly/Ark_project/src/serial_port.cpp
+ /home/cly/Ark_project/include/color.hpp
  /home/cly/Ark_project/include/packet.hpp
  /home/cly/Ark_project/include/serial_port.hpp
  /usr/include/alloca.h

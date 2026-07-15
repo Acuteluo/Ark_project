@@ -128,7 +128,8 @@ CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.o: \
  /usr/include/c++/11/bits/basic_string.tcc /usr/include/c++/11/chrono \
  /usr/include/c++/11/ratio /usr/include/c++/11/limits \
  /usr/include/c++/11/ctime /usr/include/c++/11/bits/parse_numbers.h \
- /home/cly/Ark_project/include/packet.hpp /usr/include/c++/11/iostream \
+ /home/cly/Ark_project/include/packet.hpp \
+ /home/cly/Ark_project/include/color.hpp /usr/include/c++/11/iostream \
  /usr/include/c++/11/ostream /usr/include/c++/11/ios \
  /usr/include/c++/11/exception /usr/include/c++/11/bits/exception_ptr.h \
  /usr/include/c++/11/bits/cxxabi_init_exception.h \

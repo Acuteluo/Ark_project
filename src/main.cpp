@@ -9,6 +9,7 @@
 
 #include "qrcode_scanner.hpp"
 #include "serial_port.hpp"
+#include "color.hpp"
 
 // ================= 运行模式配置 =================
 // true : 模式① 电脑端联调模式（显示UI画面，带有深拷贝与画框）
@@ -22,6 +23,7 @@ struct SharedData
     cv::Mat display_frame;         // 视觉线程写入：画好橙色边框的最终渲染图
 
     bool frame_updated = false;    // 标志位：是否有新图
+    bool is_camera_connected = false; // 标志位：相机是否连接
 
     // 将解码出的信息存在这里供串口线程计算使用
     std::pair<uint8_t, uint8_t> qr_infos = std::make_pair(0xFF, 0xFF); 
@@ -36,7 +38,7 @@ std::atomic<bool> g_running{true}; // 控制所有线程退出的原子变量
 void signalHandler(int signum)
 {
     std::cout << std::endl;
-    std::cout << "[main.cpp] 捕捉到退出信号(SIGINT)，准备退出程序..." << std::endl;
+    std::cout << YELLOW << "[main.cpp] 捕捉到退出信号(SIGINT)，准备退出程序..." << NONE << std::endl;
     g_running = false;
 }
 
@@ -92,7 +94,8 @@ void VisionThread(QRCodeScanner* scanner)
             if (elapsed_seconds >= 0.50) 
             {
                 double fps = frame_count / elapsed_seconds;
-                std::cout << "[VISION THREAD] 当前计算帧率: " << fps << " FPS" << std::endl;
+                std::cout << std::endl << "---------------------------------------" << std::endl;
+                std::cout << "[VISION THREAD] 当前计算帧率: " << GREEN << fps << NONE << " FPS" << std::endl;
                 frame_count = 0;
                 fps_start_time = fps_current_time;
             }
@@ -117,18 +120,27 @@ void SerialThread(SerialPort* serial)
 
     while (g_running)
     {
-        bool have_valid_infos = false;
+        bool have_valid_infos = false; // 是否检测到有效信息
+        bool is_camera_ok = false;     // 相机是否正常连接
+        bool send_feedback = false;    // 是否把要发送的信息写入底层
 
+        // 1. 拿取数据
         {
             // 加锁快速读取标志位
             std::lock_guard<std::mutex> lock(g_mtx);
             
             local_infos = g_data.qr_infos; // 安全地将字符串数组拷贝出来
             have_valid_infos = (local_infos.first != 0xFF) || (local_infos.second != 0xFF);
+            is_camera_ok = g_data.is_camera_connected;
         }
 
-        // 先根据 have_valid_infos 的状态来设置数据包内容
-        if (have_valid_infos)
+        // 2. 先根据 is_camera_ok 再根据 have_valid_infos 的状态来设置数据包内容
+        if (!is_camera_ok)
+        {
+            packet.data1 = 0xEE; // 相机未连接
+            packet.data2 = 0xEE;
+        }
+        else if (have_valid_infos)
         {
             packet.data1 = local_infos.first; // 代表状态 OK
             packet.data2 = local_infos.second;
@@ -139,24 +151,26 @@ void SerialThread(SerialPort* serial)
             packet.data2 = 0xFF;
         }
 
-        // 如果信息已经ok，且串口已打开，就发送！
+
+        // 3.发送数据, 如果串口已打开就发送！
         if (serial->IsOpened())
         {
-            serial->SendData(packet);
-            temp_message = "[SERIAL THREAD] 串口线程正在发送 " + std::to_string(static_cast<int>(packet.data1)) + " and " + std::to_string(static_cast<int>(packet.data2));
-        }
-        else
-        {
-            if (have_valid_infos)
-            {
-                temp_message = "[SERIAL THREAD] 串口未打开，存在 有效信息，欲发送 " + std::to_string(static_cast<int>(packet.data1)) + " and " + std::to_string(static_cast<int>(packet.data2));
-            }
-            else
-            {
-                temp_message = "[SERIAL THREAD] 串口未打开, 没有 有效信息，欲发送 " + std::to_string(static_cast<int>(packet.data1)) + " and " + std::to_string(static_cast<int>(packet.data2));
-            }
+            send_feedback = serial->SendData(packet);
         }
 
+        // 4. 组合提示信息
+        std::string camera_status = std::string(is_camera_ok ? GREEN + "OK" + NONE : RED + "ERROR" + NONE);
+        std::string serial_status = std::string(serial->IsOpened() ? GREEN + "OK" + NONE : RED + "ERROR" + NONE);
+        std::string valid_infos_status = std::string(have_valid_infos ? GREEN + "YES" + NONE : RED + "NO" + NONE);
+        std::string send_status = std::string(send_feedback ? GREEN + "SUCCESSED" + NONE : RED + "FAILED" + NONE);
+
+        temp_message = "[SERIAL THREAD] 相机 " 
+            + camera_status
+            + ", 串口 " + serial_status
+            + ", 有效信息 " + valid_infos_status
+            + ", 发送 " + std::to_string(static_cast<int>(packet.data1)) + " and " + std::to_string(static_cast<int>(packet.data2))
+            + " " + send_status;
+        
         // 假如这一次和上一次打印的提示信息不一样，就打印出来，一样就不打印，避免重复刷屏
         if (temp_message != prev_message)
         {
@@ -182,7 +196,7 @@ int main()
     
     if (!fs.isOpened())
     {
-        std::cout << "[main.cpp] 无法打开配置文件: " << config_path << std::endl;
+        std::cout << RED << "[main.cpp] 无法打开配置文件: " << config_path << NONE << std::endl;
         return -1;
     }
 
@@ -224,63 +238,83 @@ int main()
     QRCodeScanner scanner;
     if (!scanner.initModel(detect_prototxt, detect_caffe, sr_prototxt, sr_caffe))
     {
-        std::cout << "[main.cpp] QRCodeScanner scanner initialization failed, exiting program." << std::endl;
+        std::cout << RED << "[main.cpp] QRCodeScanner scanner initialization failed, exiting program." << NONE << std::endl;
         return -1;
     }
 
     // 3. 初始化摄像头
-    cv::VideoCapture cap(camera_id);
-    if (!cap.isOpened())
+    cv::VideoCapture cap;
+
+    auto openCamera = [&]() -> bool {
+        if (cap.isOpened())
+        {
+            cap.release(); // 先释放，避免之前的实例占用
+        }
+        cap.open(camera_id);
+
+        if (!cap.isOpened())
+        {
+            return false;
+        }
+
+        if (cam_format == "MJPG") 
+        {
+            cap.set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
+        }
+        cap.set(cv::CAP_PROP_FRAME_WIDTH, cam_width);
+        cap.set(cv::CAP_PROP_FRAME_HEIGHT, cam_height);
+        cap.set(cv::CAP_PROP_BRIGHTNESS, cam_brightness); // [-64, 64]
+        cap.set(cv::CAP_PROP_CONTRAST, cam_contrast);   // [0, 95]
+
+        // ==========================================================
+        // 全面获取并打印相机实际生效的参数
+        // ==========================================================
+        int actual_width = cap.get(cv::CAP_PROP_FRAME_WIDTH);
+        int actual_height = cap.get(cv::CAP_PROP_FRAME_HEIGHT);
+        int actual_brightness = cap.get(cv::CAP_PROP_BRIGHTNESS);
+        int actual_contrast = cap.get(cv::CAP_PROP_CONTRAST);
+        double actual_fps = cap.get(cv::CAP_PROP_FPS);
+        
+        // 获取实际的 FourCC 格式并转换为字符串
+        int ex = static_cast<int>(cap.get(cv::CAP_PROP_FOURCC));
+        char actual_fourcc[] = {
+            (char)(ex & 0XFF),
+            (char)((ex & 0XFF00) >> 8),
+            (char)((ex & 0XFF0000) >> 16),
+            (char)((ex & 0XFF000000) >> 24),
+            '\0'
+        }; 
+
+        // 获取其他可能有用的图像控制参数 (不同相机支持度不同，不支持通常返回 -1 或 0)
+        double exposure = cap.get(cv::CAP_PROP_EXPOSURE);
+        std::string backend_name = cap.getBackendName(); // 例如 V4L2
+
+        std::cout << std::endl;
+        std::cout << "================= [ACTUAL CAMERA STATUS] =================" << std::endl;
+        std::cout << "  Backend API   : " << backend_name << std::endl;
+        std::cout << "  Resolution    : " << actual_width << "x" << actual_height << std::endl;
+        std::cout << "  FPS           : " << actual_fps << std::endl;
+        std::cout << "  Video Format  : " << (strlen(actual_fourcc) > 0 ? actual_fourcc : "Unknown") << std::endl;
+        std::cout << "  Exposure      : " << exposure << std::endl;
+        std::cout << "  Brightness    : " << actual_brightness << std::endl;
+        std::cout << "  Contrast      : " << actual_contrast << std::endl;
+        std::cout << "==========================================================" << std::endl;
+
+        std::cout << "[main.cpp] 相机初始化完毕, " << (g_show_gui ? "按 'ESC' 或 'q' 退出" : "按 'Ctrl+C' 退出") << std::endl;
+        std::cout << std::endl;
+        return true;
+    };
+
+    if (!openCamera())
     {
-        std::cout << "[main.cpp] cap.isOpened() = false, ID: " << camera_id << std::endl;
-        return -1;
+        std::cout << RED << "[main.cpp] 初始打开相机失败, ID: " << camera_id << NONE << std::endl;
+        g_data.is_camera_connected = false;
+        // 这里不再 return -1 直接退出程序，而是让它进入下方的主循环，自动开始 0.5s 间隔的重连
     }
-
-    if (cam_format == "MJPG") 
+    else
     {
-        cap.set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
+        g_data.is_camera_connected = true; // 摄像头成功打开，设置标志位为 true
     }
-    cap.set(cv::CAP_PROP_FRAME_WIDTH, cam_width);
-    cap.set(cv::CAP_PROP_FRAME_HEIGHT, cam_height);
-    cap.set(cv::CAP_PROP_BRIGHTNESS, cam_brightness); // [-64, 64]
-    cap.set(cv::CAP_PROP_CONTRAST, cam_contrast);   // [0, 95]
-
-    // ==========================================================
-    // 全面获取并打印相机实际生效的参数
-    // ==========================================================
-    int actual_width = cap.get(cv::CAP_PROP_FRAME_WIDTH);
-    int actual_height = cap.get(cv::CAP_PROP_FRAME_HEIGHT);
-    int actual_brightness = cap.get(cv::CAP_PROP_BRIGHTNESS);
-    int actual_contrast = cap.get(cv::CAP_PROP_CONTRAST);
-    double actual_fps = cap.get(cv::CAP_PROP_FPS);
-    
-    // 获取实际的 FourCC 格式并转换为字符串
-    int ex = static_cast<int>(cap.get(cv::CAP_PROP_FOURCC));
-    char actual_fourcc[] = {
-        (char)(ex & 0XFF),
-        (char)((ex & 0XFF00) >> 8),
-        (char)((ex & 0XFF0000) >> 16),
-        (char)((ex & 0XFF000000) >> 24),
-        '\0'
-    }; 
-
-    // 获取其他可能有用的图像控制参数 (不同相机支持度不同，不支持通常返回 -1 或 0)
-    double exposure = cap.get(cv::CAP_PROP_EXPOSURE);
-    std::string backend_name = cap.getBackendName(); // 例如 V4L2
-
-    std::cout << std::endl;
-    std::cout << "================= [ACTUAL CAMERA STATUS] =================" << std::endl;
-    std::cout << "  Backend API   : " << backend_name << std::endl;
-    std::cout << "  Resolution    : " << actual_width << "x" << actual_height << std::endl;
-    std::cout << "  FPS           : " << actual_fps << std::endl;
-    std::cout << "  Video Format  : " << (strlen(actual_fourcc) > 0 ? actual_fourcc : "Unknown") << std::endl;
-    std::cout << "  Exposure      : " << exposure << std::endl;
-    std::cout << "  Brightness    : " << actual_brightness << std::endl;
-    std::cout << "  Contrast      : " << actual_contrast << std::endl;
-    std::cout << "==========================================================" << std::endl;
-
-    std::cout << "[main.cpp] 相机初始化完毕, " << (g_show_gui ? "按 'ESC' 或 'q' 退出" : "按 'Ctrl+C' 退出") << std::endl;
-    std::cout << std::endl;
 
     // 4. 读取串口配置，并初始化串口
     
@@ -294,7 +328,7 @@ int main()
     }
     else
     {
-        std::cout << "  is_serial_open: FAILED" << std::endl;
+        std::cout << YELLOW << "  is_serial_open: FAILED" << NONE << std::endl;
     }
     std::cout << "===================================================" << std::endl;
     std::cout << std::endl;
@@ -310,10 +344,45 @@ int main()
     // 6. 主循环
     cv::Mat frame;
     cv::Mat show_frame; // 显示用图
+    int empty_frame_count = 0; // 连续空帧计数器，用于判断相机是否被物理拔出
+
     while (g_running)
     {
+        if (!g_data.is_camera_connected)
+        {
+            std::cout << "---------------------------------------" << std::endl;
+            std::cout << YELLOW << "[main.cpp] 相机已断开, 0.5s 后尝试重新连接..." << NONE << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            
+            if (openCamera()) 
+            {
+                std::cout << GREEN << "[main.cpp] 相机重连成功，恢复视觉流！" << NONE << std::endl;
+                std::lock_guard<std::mutex> lock(g_mtx);
+                g_data.is_camera_connected = true;
+                empty_frame_count = 0; // 重置防抖计数
+            }
+            continue; // 重连阶段，直接跳过本轮后续的图像捕获与共享内存写入
+        }
+
         cap >> frame;
-        if (frame.empty()) continue; // 防止相机掉线等异常读取空帧崩溃
+
+        if (frame.empty()) 
+        {
+            empty_frame_count++;
+
+            // 连续 5 帧拉取不到图像，才判定为相机被物理拔出（机器人行进中由于震动导致的偶发掉帧）
+            if (empty_frame_count >= 5) 
+            {
+                std::cout << RED << "[main.cpp] 连续读取空帧，相机物理掉线！" << NONE << std::endl;
+                std::lock_guard<std::mutex> lock(g_mtx);
+                g_data.is_camera_connected = false; // 触发掉线
+            }
+            continue; 
+        }
+        else 
+        {
+            empty_frame_count = 0; // 只要读到一帧有效图，立刻清零防抖计数器
+        }
 
         // 丢进共享内存，通知视觉线程
         {

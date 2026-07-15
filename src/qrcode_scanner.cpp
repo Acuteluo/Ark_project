@@ -1,4 +1,5 @@
-#include "../include/qrcode_scanner.hpp"
+#include "qrcode_scanner.hpp"
+#include "color.hpp"
 
 QRCodeScanner::QRCodeScanner()
 {
@@ -26,7 +27,7 @@ bool QRCodeScanner::initModel(const std::string& detect_prototxt,
     }
     catch (const cv::Exception& e)
     {
-        std::cerr << "[qrcode_scanner.cpp] 模型加载失败, OpenCV 报错: " << e.what() << std::endl;
+        std::cout << RED << "[qrcode_scanner.cpp] 模型加载失败, OpenCV 报错: " << e.what() << NONE << std::endl;
         return false;
     }
 }
@@ -35,7 +36,7 @@ bool QRCodeScanner::processFrame(cv::Mat& frame, bool draw_result)
 {
     if (detector.empty())
     {
-        std::cerr << "[qrcode_scanner.cpp] 检测器未初始化！" << std::endl;
+        std::cout << RED << "[qrcode_scanner.cpp] 检测器未初始化！" << NONE << std::endl;
         return false;
     }
 
@@ -112,7 +113,7 @@ void QRCodeScanner::decodeColorInfos(cv::Mat& frame, const std::vector<std::stri
         {
             if (basic_color_position == -1 || core_color_position == -1)
             {
-                std::cerr << "[qrcode_scanner.cpp] 错误: 颜色位置为 -1" << std::endl;
+                std::cout << RED << "[qrcode_scanner.cpp] 错误: 颜色位置为 -1" << NONE << std::endl;
                 continue;
             }
 
@@ -129,8 +130,8 @@ void QRCodeScanner::decodeColorInfos(cv::Mat& frame, const std::vector<std::stri
                 color_infos_.first = basic_color; // 存储基础颜色
                 color_infos_.second = core_color; // 存储核心颜色
 
-                std::cout << "[qrcode_scanner.cpp] 【有效信息更新】检测到基础颜色: " << colors[basic_color] 
-                          << ", 核心颜色: " << colors[core_color] << std::endl;
+                std::cout << "[qrcode_scanner.cpp] 【有效信息更新】检测到基础颜色: " << GREEN << colors[basic_color] 
+                          << NONE << ", 核心颜色: " << GREEN << colors[core_color] << NONE << std::endl;
             }
         }
         
@@ -139,7 +140,7 @@ void QRCodeScanner::decodeColorInfos(cv::Mat& frame, const std::vector<std::stri
         { 
             if (basic_color_position == -1 || core_color_position != -1)
             {
-                std::cerr << "[qrcode_scanner.cpp] 错误: 颜色位置为 -1 或 颜色存储错误" << std::endl;
+                std::cout << RED << "[qrcode_scanner.cpp] 错误: 颜色位置为 -1 或 颜色存储错误" << NONE << std::endl;
                 continue;
             }
 
@@ -151,7 +152,7 @@ void QRCodeScanner::decodeColorInfos(cv::Mat& frame, const std::vector<std::stri
                 color_infos_.first = basic_color; // 存储 0xFF
                 color_infos_.second = core_color; // 存储 球框颜色
 
-                std::cout << "[qrcode_scanner.cpp] 【有效信息更新】检测到球框颜色: " << colors[core_color] << std::endl;
+                std::cout << "[qrcode_scanner.cpp] 【有效信息更新】检测到球框颜色: " << GREEN << colors[core_color] << NONE << std::endl;
             }
         }
     }

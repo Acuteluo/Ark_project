@@ -373,4 +373,5 @@ CMakeFiles/Ark_Scanner.dir/src/main.cpp.o: \
  /home/cly/Ark_project/include/qrcode_scanner.hpp \
  /usr/local/include/opencv4/opencv2/wechat_qrcode.hpp \
  /home/cly/Ark_project/include/serial_port.hpp \
- /home/cly/Ark_project/include/packet.hpp
+ /home/cly/Ark_project/include/packet.hpp \
+ /home/cly/Ark_project/include/color.hpp

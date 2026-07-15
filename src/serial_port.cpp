@@ -1,4 +1,5 @@
 #include "serial_port.hpp"
+#include "color.hpp"
 #include <iostream>
 #include <fcntl.h>   // 文件控制定义
 #include <termios.h> // POSIX 终端控制定义
@@ -22,7 +23,7 @@ bool SerialPort::OpenPort()
     
     if (fd_ == -1)
     {
-        std::cout << "[serial_port.cpp] 无法打开串口" << port_name_ << std::endl;
+        std::cout << RED << "[serial_port.cpp] 无法打开串口" << port_name_ << NONE << std::endl;
         return false;
     }
 
@@ -65,7 +66,7 @@ bool SerialPort::OpenPort()
     tcflush(fd_, TCIFLUSH);
     if (tcsetattr(fd_, TCSANOW, &options) != 0)
     {
-        std::cout << "[serial_port.cpp] 串口参数设置失败！" << std::endl;
+        std::cout << RED << "[serial_port.cpp] 串口参数设置失败！" << NONE << std::endl;
         close(fd_);
         return false;
     }
@@ -82,7 +83,7 @@ void SerialPort::ClosePort()
         close(fd_);
         is_open_ = false;
         fd_ = -1;
-        std::cout << "[serial_port.cpp] 串口已关闭。" << std::endl;
+        std::cout << YELLOW << "[serial_port.cpp] 串口已关闭。" << NONE << std::endl;
     }
 }
 
@@ -90,7 +91,7 @@ bool SerialPort::SendData(const SendPacket& packet)
 {
     if (!is_open_) 
     {
-        std::cout << "[serial_port.cpp] 发送时发现串口未打开！" << std::endl;
+        std::cout << RED << "[serial_port.cpp] 发送时发现串口未打开！" << NONE << std::endl;
         return false;
     }
 
@@ -103,7 +104,7 @@ bool SerialPort::SendData(const SendPacket& packet)
     }
     else
     {
-        std::cout << "[serial_port.cpp] 数据发送不完整或失败！" << std::endl;
+        std::cout << RED << "[serial_port.cpp] 数据发送不完整或失败！" << NONE << std::endl;
 
         // 尝试重新打开串口 reopenPort() 
         return ReopenPort();
@@ -133,7 +134,7 @@ bool SerialPort::IsOpened()
 
 bool SerialPort::ReopenPort()
 {
-    std::cout << "[serial_port.cpp] 尝试重新打开串口..." << std::endl;
+    std::cout << YELLOW << "[serial_port.cpp] 尝试重新打开串口..." << NONE << std::endl;
     ClosePort();
     return OpenPort();
 }
