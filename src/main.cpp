@@ -22,14 +22,9 @@ struct SharedData
     cv::Mat display_frame;         // 视觉线程写入：画好橙色边框的最终渲染图
 
     bool frame_updated = false;    // 标志位：是否有新图
-    bool is_4_qr_ready = false;    // 标志位：是否集齐了 4 个二维码
 
     // 将解码出的信息存在这里供串口线程计算使用
-    std::pair<uint8_t, uint8_t> qr_infos; 
-
-    // 记录系统的启动时刻与集齐 4 个二维码的结束时刻
-    std::chrono::steady_clock::time_point start_time;
-    std::chrono::steady_clock::time_point end_time;
+    std::pair<uint8_t, uint8_t> qr_infos = std::make_pair(0xFF, 0xFF); 
 };
 
 SharedData g_data;
@@ -102,19 +97,10 @@ void VisionThread(QRCodeScanner* scanner)
                 fps_start_time = fps_current_time;
             }
 
-            // 如果信息已经解码，且尚未触发过 4 个二维码的 ready
-            if (scanner->getuint8t().first != 0x00 && scanner->getuint8t().second != 0x00 && !g_data.is_4_qr_ready) 
-            {
-                g_data.is_4_qr_ready = true;
-                g_data.qr_infos = scanner->getuint8t(); // 把字符串数组拷贝进共享内存
+            // 把字符串数组拷贝进共享内存
+            g_data.qr_infos = scanner->getuint8t(); 
 
-                // 保存检测出来的时刻
-                g_data.end_time = fps_current_time;
-                double finally_period_seconds = std::chrono::duration<double>(g_data.end_time - g_data.start_time).count();
-
-                std::cout << "[VISION THREAD] 成功解码信息" << std::endl;
-                std::cout << "[VISION THREAD] 从系统启动到解码信息耗时: " << finally_period_seconds << " s" << std::endl;
-            }
+            // std::cout << "[RESULT] 识别结果: " << int(g_data.qr_infos.first) << " and " << int(g_data.qr_infos.second) << std::endl;
         }
     }
 }
@@ -131,22 +117,18 @@ void SerialThread(SerialPort* serial)
 
     while (g_running)
     {
-        bool ready_to_send = false;
+        bool have_valid_infos = false;
 
         {
             // 加锁快速读取标志位
             std::lock_guard<std::mutex> lock(g_mtx);
-            ready_to_send = g_data.is_4_qr_ready;
-
-            if (ready_to_send)
-            {
-                // std::cout << "[VISION THREAD] 集齐了 4 个二维码，准备发送！" << std::endl;
-                local_infos = g_data.qr_infos; // 安全地将字符串数组拷贝出来
-            }
+            
+            local_infos = g_data.qr_infos; // 安全地将字符串数组拷贝出来
+            have_valid_infos = (local_infos.first != 0xFF) || (local_infos.second != 0xFF);
         }
 
-        // 先根据 ready_to_send 的状态来设置数据包内容
-        if (ready_to_send)
+        // 先根据 have_valid_infos 的状态来设置数据包内容
+        if (have_valid_infos)
         {
             packet.data1 = local_infos.first; // 代表状态 OK
             packet.data2 = local_infos.second;
@@ -165,13 +147,13 @@ void SerialThread(SerialPort* serial)
         }
         else
         {
-            if (ready_to_send)
+            if (have_valid_infos)
             {
-                temp_message = "[SERIAL THREAD] 串口未打开，已 识别信息，欲发送 " + std::to_string(static_cast<int>(packet.data1)) + " and " + std::to_string(static_cast<int>(packet.data2));
+                temp_message = "[SERIAL THREAD] 串口未打开，存在 有效信息，欲发送 " + std::to_string(static_cast<int>(packet.data1)) + " and " + std::to_string(static_cast<int>(packet.data2));
             }
             else
             {
-                temp_message = "[SERIAL THREAD] 串口未打开, 未 识别信息，欲发送 " + std::to_string(static_cast<int>(packet.data1)) + " and " + std::to_string(static_cast<int>(packet.data2));
+                temp_message = "[SERIAL THREAD] 串口未打开, 没有 有效信息，欲发送 " + std::to_string(static_cast<int>(packet.data1)) + " and " + std::to_string(static_cast<int>(packet.data2));
             }
         }
 
@@ -321,8 +303,6 @@ int main()
     // 5. 启动子线程  
     std::thread vision_thread(VisionThread, &scanner); // 启动视觉识别线程
     std::thread serial_thread(SerialThread, &serial);  // 启动串口发送线程 
-
-    g_data.start_time = std::chrono::steady_clock::now(); // 启动计时
 
     std::cout << "[main.cpp] started threads" << std::endl;
 

@@ -41,9 +41,8 @@ private:
     // 解码目前检测的信息，并检测目前是否已经解码信息，在左上角提示
     void decodeColorInfos(cv::Mat& frame, const std::vector<std::string>& decoded_info);
 
-    // 存储目标 uint8t 信息
-    uint8_t ultimately_basic_color_ = 0x00;
-    uint8_t ultimately_core_color_ = 0x00;
+    // 存储目标 uint8_t 信息
+    std::pair<uint8_t, uint8_t> color_infos_ = std::make_pair(0xFF, 0xFF);
 
     // 颜色映射表
     std::string colors[4] = {"", "Red", "Yellow", "Blue"};
