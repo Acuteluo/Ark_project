@@ -118,11 +118,11 @@ bool SerialPort::IsOpened()
     }
     else
     {
-        // 如果串口未打开，尝试每隔 2 秒重新打开一次
+        // 如果串口未打开，尝试每隔 0.50 秒重新打开一次
         auto now = std::chrono::steady_clock::now();
         auto elapsed = std::chrono::duration<double>(now - prev_retry_time_).count();
 
-        if (elapsed >= 2.00)
+        if (elapsed >= 0.50)
         {
             prev_retry_time_ = now;
             ReopenPort();
