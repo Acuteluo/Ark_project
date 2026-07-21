@@ -1,5 +1,5 @@
 #include "serial_port.hpp"
-#include "color.hpp"
+#include "logger.hpp" // 日志模块
 #include <iostream>
 #include <fcntl.h>   // 文件控制定义
 #include <termios.h> // POSIX 终端控制定义
@@ -23,7 +23,7 @@ bool SerialPort::OpenPort()
     
     if (fd_ == -1)
     {
-        std::cout << RED << "[serial_port.cpp] 无法打开串口" << port_name_ << NONE << std::endl;
+        LOG_ERROR("[serial_port.cpp] 无法打开串口 {}", port_name_);
         return false;
     }
 
@@ -66,13 +66,13 @@ bool SerialPort::OpenPort()
     tcflush(fd_, TCIFLUSH);
     if (tcsetattr(fd_, TCSANOW, &options) != 0)
     {
-        std::cout << RED << "[serial_port.cpp] 串口参数设置失败！" << NONE << std::endl;
+        LOG_ERROR("[serial_port.cpp] 串口参数设置失败！");
         close(fd_);
         return false;
     }
 
     is_open_ = true;
-    std::cout << "[serial_port.cpp] 串口 " << port_name_ << " 打开成功，波特率: " << baud_rate_ << std::endl;
+    LOG_INFO("[serial_port.cpp] 串口 {} 打开成功，波特率: {}", port_name_, baud_rate_);
     return true;
 }
 
@@ -83,7 +83,7 @@ void SerialPort::ClosePort()
         close(fd_);
         is_open_ = false;
         fd_ = -1;
-        std::cout << YELLOW << "[serial_port.cpp] 串口已关闭。" << NONE << std::endl;
+        LOG_WARN("[serial_port.cpp] 串口已关闭。");
     }
 }
 
@@ -91,7 +91,7 @@ bool SerialPort::SendData(const SendPacket& packet)
 {
     if (!is_open_) 
     {
-        std::cout << RED << "[serial_port.cpp] 发送时发现串口未打开！" << NONE << std::endl;
+        LOG_WARN("[serial_port.cpp] 发送时发现串口未打开！");
         return false;
     }
 
@@ -104,7 +104,7 @@ bool SerialPort::SendData(const SendPacket& packet)
     }
     else
     {
-        std::cout << RED << "[serial_port.cpp] 数据发送不完整或失败！" << NONE << std::endl;
+        LOG_ERROR("[serial_port.cpp] 数据发送不完整或失败！");
 
         // 尝试重新打开串口 reopenPort() 
         return ReopenPort();
@@ -134,7 +134,7 @@ bool SerialPort::IsOpened()
 
 bool SerialPort::ReopenPort()
 {
-    std::cout << YELLOW << "[serial_port.cpp] 尝试重新打开串口..." << NONE << std::endl;
+    LOG_WARN("[serial_port.cpp] 尝试重新打开串口...");
     ClosePort();
     return OpenPort();
 }

@@ -1,5 +1,5 @@
 #include "qrcode_scanner.hpp"
-#include "color.hpp"
+#include "logger.hpp"
 
 QRCodeScanner::QRCodeScanner()
 {
@@ -11,7 +11,7 @@ QRCodeScanner::~QRCodeScanner()
     // 智能指针会自动释放内存，无需手动 delete
 }
 
-bool QRCodeScanner::initModel(const std::string& detect_prototxt,
+bool QRCodeScanner::InitModel(const std::string& detect_prototxt,
                               const std::string& detect_caffe,
                               const std::string& sr_prototxt,
                               const std::string& sr_caffe)
@@ -22,21 +22,21 @@ bool QRCodeScanner::initModel(const std::string& detect_prototxt,
         detector = cv::makePtr<cv::wechat_qrcode::WeChatQRCode>(
             detect_prototxt, detect_caffe, sr_prototxt, sr_caffe);
         
-        std::cout << "[qrcode_scanner.cpp] 微信二维码模型加载成功" << std::endl;
+        LOG_INFO("[qrcode_scanner.cpp] 微信模型加载成功");
         return true;
     }
     catch (const cv::Exception& e)
     {
-        std::cout << RED << "[qrcode_scanner.cpp] 模型加载失败, OpenCV 报错: " << e.what() << NONE << std::endl;
+        LOG_ERROR("[qrcode_scanner.cpp] 微信模型加载失败, OpenCV 报错：{}", e.what());
         return false;
     }
 }
 
-bool QRCodeScanner::processFrame(cv::Mat& frame, bool draw_result)
+bool QRCodeScanner::ProcessFrame(cv::Mat& frame, bool draw_result)
 {
     if (detector.empty())
     {
-        std::cout << RED << "[qrcode_scanner.cpp] 检测器未初始化！" << NONE << std::endl;
+        LOG_ERROR("[qrcode_scanner.cpp] 检测器未初始化！");
         return false;
     }
 
@@ -51,34 +51,28 @@ bool QRCodeScanner::processFrame(cv::Mat& frame, bool draw_result)
     // 如果检测到了二维码，解码信息，并进行可视化绘制
     if (!decoded_info.empty())
     {
-        decodeColorInfos(frame, decoded_info); 
-
-        if (draw_result)
-        {
-            drawResults(frame, points, decoded_info);
-        }
-
-        return true;
+        DecodeColorInfos(frame, decoded_info); 
     }
 
-    return false;
+    // 无论当前有没有检测到二维码，只要开启了显示模式，就把现有的历史记录贴在屏幕上。
+    // 如果 decoded_info 为空，DrawResults 内部的橙色框 for 循环会自动跳过，只画文字。
+    if (draw_result)
+    {
+        DrawResults(frame, points, decoded_info);
+    }
+
+    return !decoded_info.empty();
 }
 
-void QRCodeScanner::decodeColorInfos(cv::Mat& frame, const std::vector<std::string>& decoded_info)
+void QRCodeScanner::DecodeColorInfos(cv::Mat& frame, const std::vector<std::string>& decoded_info)
 { 
-    int color_count = 0; // 颜色计数，1=识别篮筐，2=基础球+核心球
-    int basic_color = 0xFF, core_color = 0xFF;
-    int basic_color_position = -1, core_color_position = -1;
-    bool is_comma = false; // 用于判断是否有逗号分隔符
+    int red_position = -1, yellow_position = -1, blue_position = -1; // 用来找字符串中是否有颜色
+    int color_count = 0; // 存在颜色的数量
 
     // 使用 std::find 查找目前检测到的二维码信息是否存有有效的信息
     for (size_t i = 0; i < decoded_info.size(); i++)
     {
         std::string info = decoded_info[i]; // 获取当前二维码的文本内容
-        color_count = 0; // 颜色计数清零
-        basic_color = 0xFF, core_color = 0xFF;
-        basic_color_position = -1, core_color_position = -1;
-        is_comma = false;
 
         // 跳过空字符串
         if (info.empty()) 
@@ -86,80 +80,92 @@ void QRCodeScanner::decodeColorInfos(cv::Mat& frame, const std::vector<std::stri
             continue;
         }
 
-        // 检查是否包含逗号分隔符
-        is_comma = (info.find(',') != std::string::npos);
+        // 先清空数据，然后查找三种颜色是否都出现过
+        red_position = -1;
+        yellow_position = -1;
+        blue_position = -1;
+        color_count = 0;
 
-        // 遍历颜色映射表（"" Red Yellow Blue），查找当前二维码信息中是否包含已知颜色
-        for (int j = 1; j < 4; j++)
+        red_position = info.find("Red");
+        yellow_position = info.find("Yellow");
+        blue_position = info.find("Blue");
+        color_count = (red_position != -1) + (yellow_position != -1) + (blue_position != -1);
+
+        // 开始大段判断，代码长是长，但是逻辑最清楚最简单
+        if (color_count <= 1)
         {
-            if (info.find(colors[j]) != std::string::npos)
-            {
-                color_count++;
-                if (color_count == 1)
-                {
-                    basic_color = j;
-                    basic_color_position = info.find(colors[j]);
-                }
-                else
-                {
-                    core_color = j;
-                    core_color_position = info.find(colors[j]);
-                }
-            }
+            continue;
         }
+        else if (color_count == 2) // 存在两种颜色，那就是 基础框 和 核心框 对应的颜色
+        { 
+            uint8_t data1 = 0xFF; // 有效信息 1
 
-        // 一个二维码里集齐两种颜色，并且有,分隔符，确保都不是0xFF，说明是识别到 基础颜色 和 核心颜色 了
-        if (color_count == 2 && is_comma && (basic_color != 0xFF && core_color != 0xFF))
-        {
-            if (basic_color_position == -1 || core_color_position == -1)
+            if (red_position == -1) // 存在蓝黄
             {
-                std::cout << RED << "[qrcode_scanner.cpp] 错误: 颜色位置为 -1" << NONE << std::endl;
-                continue;
+                if (yellow_position < blue_position) data1 = 0x04; // 0x04：Yellow,Blue
+                else data1 = 0x06;                                 // 0x06：Blue,Yellow
             }
-
-            // 确保基础颜色在前，核心颜色在后
-            if (basic_color_position > core_color_position)
+            else if (yellow_position == -1) // 存在红蓝
             {
-                std::swap(basic_color, core_color); 
-                std::swap(basic_color_position, core_color_position);
+                if (red_position < blue_position) data1 = 0x02;    // 0x02：Red,Blue
+                else data1 = 0x05;                                 // 0x05：Blue,Red
+            }
+            else // 存在红黄
+            {
+                if (red_position < yellow_position) data1 = 0x01;  // 0x01：Red,Yellow
+                else data1 = 0x03;                                 // 0x03：Yellow,Red
             }
 
             // 只有有效信息不同的时候才改变存储的信息
-            if (basic_color != color_infos_.first || core_color != color_infos_.second)
+            if (data1 != 0xFF && data1 != color_infos_.first)
             {
-                color_infos_.first = basic_color; // 存储基础颜色
-                color_infos_.second = core_color; // 存储核心颜色
+                color_infos_.first = data1; // 存储 基础框、核心框 对应的颜色
+                valid_info1_ = info;
+                LOG_INFO("[qrcode_scanner.cpp] data1 更新，检测到 基础框 和 核心框 的颜色: {}", valid_info1_);
+            }
+        }
+        else if (color_count == 3) // 存在三种颜色，那就是机器人面朝着的 投球框 对应的颜色顺序
+        {
+            uint8_t data2 = 0xFF; // 有效信息 2
 
-                std::cout << "[qrcode_scanner.cpp] 【有效信息更新】检测到基础颜色: " << GREEN << colors[basic_color] 
-                          << NONE << ", 核心颜色: " << GREEN << colors[core_color] << NONE << std::endl;
+            if (red_position < yellow_position && yellow_position < blue_position)      // 0x01：Red,Yellow,Blue
+            {
+                data2 = 0x01; 
+            }
+            else if (red_position < blue_position && blue_position < yellow_position)   // 0x02：Red,Blue,Yellow
+            {
+                data2 = 0x02; 
+            }
+            else if (yellow_position < red_position && red_position < blue_position)    // 0x03：Yellow,Red,Blue
+            {
+                data2 = 0x03; 
+            }
+            else if(yellow_position < blue_position && blue_position < red_position)    // 0x04：Yellow,Blue,Red
+            {
+                data2 = 0x04; 
+            }
+            else if (blue_position < yellow_position && yellow_position < red_position) // 0x05：Blue,Yellow,Red
+            {
+                data2 = 0x05; 
+            }
+            else if (blue_position < red_position && red_position < yellow_position)    // 0x06：Blue,Red,Yellow
+            {
+                data2 = 0x06; 
+            }
+
+            if (data2 != 0xFF && data2 != color_infos_.second)
+            {
+                color_infos_.second = data2; // 存储 三个投球框 对应的颜色顺序
+                valid_info2_ = info;
+                LOG_INFO("[qrcode_scanner.cpp] data2 更新，检测到 三个投球框 的颜色顺序: {}", valid_info2_);
             }
         }
         
-        // 一个二维码里集齐一种颜色，并且没有,分隔符，说明是识别到 球框颜色 了
-        else if (color_count == 1 && !is_comma && (basic_color != 0xFF && core_color == 0xFF))
-        { 
-            if (basic_color_position == -1 || core_color_position != -1)
-            {
-                std::cout << RED << "[qrcode_scanner.cpp] 错误: 颜色位置为 -1 或 颜色存储错误" << NONE << std::endl;
-                continue;
-            }
-
-            std::swap(basic_color, core_color);
-            std::swap(basic_color_position, core_color_position);
-
-            if (basic_color != color_infos_.first || core_color != color_infos_.second)
-            {
-                color_infos_.first = basic_color; // 存储 0xFF
-                color_infos_.second = core_color; // 存储 球框颜色
-
-                std::cout << "[qrcode_scanner.cpp] 【有效信息更新】检测到球框颜色: " << GREEN << colors[core_color] << NONE << std::endl;
-            }
-        }
     }
 
 }
 
-void QRCodeScanner::drawResults(cv::Mat& frame, 
+void QRCodeScanner::DrawResults(cv::Mat& frame, 
                                 const std::vector<cv::Mat>& points, 
                                 const std::vector<std::string>& decoded_info)
 {
@@ -203,39 +209,32 @@ void QRCodeScanner::drawResults(cv::Mat& frame,
         cv::putText(frame, info, text_origin, cv::FONT_HERSHEY_SIMPLEX, 
                     1.5, green, 2, cv::LINE_AA);
         
-        // 在终端同步输出信息，方便调试
-        // std::cout << "[DETECTED] QRCode " << i + 1 << ": " << info << std::endl;
     }
 
     // 在图上显示目前检测到的二维码数量
-    cv::Point2f printinfo_position(10, 50);
-    std::string printinfo;
-    if (color_infos_.first == 0xFF && color_infos_.second == 0xFF)
+    cv::Point2f printinfo1_position(20, 50);
+    cv::Point2f printinfo2_position(20, 100);
+    std::string printinfo1 = "INFO 1 = NO INFO";
+    std::string printinfo2 = "INFO 2 = NO INFO";
+
+    if (color_infos_.first != 0xFF)
     {
-        printinfo = "NO INFO";
-    }
-    else
-    {
-        if (color_infos_.first == 0xFF) 
-        {
-            printinfo = "INFO: color1=NULL color2=" + colors[color_infos_.second];
-        }
-        else if (color_infos_.second == 0xFF) 
-        {
-            printinfo = "INFO: color1=" + colors[color_infos_.first] + " color2=NULL";
-        }
-        else
-        {
-            printinfo = "INFO: color1=" + colors[color_infos_.first] + " color2=" + colors[color_infos_.second];
-        }
+        printinfo1 = "INFO 1 = " + valid_info1_;
     }
 
-    cv::putText(frame, printinfo, printinfo_position, cv::FONT_HERSHEY_SIMPLEX, 
+    if (color_infos_.second != 0xFF)
+    {
+        printinfo2 = "INFO 2 = " + valid_info2_;
+    }
+    
+    cv::putText(frame, printinfo1, printinfo1_position, cv::FONT_HERSHEY_SIMPLEX, 
+                    1.5, green, 2, cv::LINE_AA);
+    cv::putText(frame, printinfo2, printinfo2_position, cv::FONT_HERSHEY_SIMPLEX, 
                     1.5, green, 2, cv::LINE_AA);
 }
 
 
-std::pair<uint8_t, uint8_t> QRCodeScanner::getuint8t()
+std::pair<uint8_t, uint8_t> QRCodeScanner::GetResult()
 {
     return color_infos_;
 }

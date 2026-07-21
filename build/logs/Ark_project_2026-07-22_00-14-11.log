@@ -1,0 +1,74 @@
+[2026-07-22 00:14:11.650] [debug] ================= [CONFIG LOADED] =================
+[2026-07-22 00:14:11.650] [debug]   Mode: PC
+[2026-07-22 00:14:11.650] [debug]   Camera ID : 0
+[2026-07-22 00:14:11.650] [debug]   Target Res: 1280x720
+[2026-07-22 00:14:11.650] [debug]   Target Fmt: MJPG
+[2026-07-22 00:14:11.650] [debug]   Target Brightness: 0
+[2026-07-22 00:14:11.650] [debug]   Target Contrast: 0
+[2026-07-22 00:14:11.650] [debug]   Model Path: ../models/detect.prototxt | ../models/detect.caffemodel | ../models/sr.prototxt | ../models/sr.caffemodel
+[2026-07-22 00:14:11.650] [debug] ===================================================
+[2026-07-22 00:14:11.654] [info] [qrcode_scanner.cpp] 微信模型加载成功
+[2026-07-22 00:14:11.776] [debug] 
+[2026-07-22 00:14:11.776] [debug] ================= [ACTUAL CAMERA STATUS] =================
+[2026-07-22 00:14:11.776] [debug]   Backend API   : V4L2
+[2026-07-22 00:14:11.776] [debug]   Resolution    : 1280x720
+[2026-07-22 00:14:11.776] [debug]   FPS           : 30
+[2026-07-22 00:14:11.776] [debug]   Video Format  : MJPG
+[2026-07-22 00:14:11.776] [debug]   Exposure      : 166
+[2026-07-22 00:14:11.776] [debug]   Brightness    : 0
+[2026-07-22 00:14:11.776] [debug]   Contrast      : 0
+[2026-07-22 00:14:11.776] [debug] ==========================================================
+[2026-07-22 00:14:11.776] [debug] [main.cpp] 相机初始化完毕, 按 'ESC' 或 'q' 退出
+
+[2026-07-22 00:14:11.776] [debug] ================= [SERIAL STATUS] =================
+[2026-07-22 00:14:11.776] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:14:11.776] [error]   is_serial_open: FAILED
+[2026-07-22 00:14:11.776] [debug] ===================================================
+
+[2026-07-22 00:14:11.776] [debug] [main.cpp] starting threads...
+
+[2026-07-22 00:14:11.776] [info] [SERIAL THREAD] 相机 OK, 串口 ERROR, 有效信息 NO, 发送 255 and 255 FAILED
+[2026-07-22 00:14:12.159] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:14:12.159] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:14:12.313] [debug] 
+
+[2026-07-22 00:14:12.313] [info] [main.cpp] 当前计算帧率: 5.59 FPS
+[2026-07-22 00:14:12.666] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:14:12.666] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:14:12.831] [debug] 
+
+[2026-07-22 00:14:12.831] [info] [main.cpp] 当前计算帧率: 17.35 FPS
+[2026-07-22 00:14:13.171] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:14:13.172] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:14:13.332] [debug] 
+
+[2026-07-22 00:14:13.332] [info] [main.cpp] 当前计算帧率: 15.98 FPS
+[2026-07-22 00:14:13.384] [info] [qrcode_scanner.cpp] data1 更新，检测到 基础框 和 核心框 的颜色: Red,Blue
+[2026-07-22 00:14:13.393] [info] [SERIAL THREAD] 相机 OK, 串口 ERROR, 有效信息 YES, 发送 2 and 255 FAILED
+[2026-07-22 00:14:13.440] [info] [qrcode_scanner.cpp] data1 更新，检测到 基础框 和 核心框 的颜色: Yellow,Blue,Red
+[2026-07-22 00:14:13.440] [info] [qrcode_scanner.cpp] data2 更新，检测到 三个投球框 的颜色顺序: Yellow,Blue,Red
+[2026-07-22 00:14:13.440] [info] [qrcode_scanner.cpp] data1 更新，检测到 基础框 和 核心框 的颜色: Red,Blue
+[2026-07-22 00:14:13.444] [info] [SERIAL THREAD] 相机 OK, 串口 ERROR, 有效信息 YES, 发送 2 and 4 FAILED
+[2026-07-22 00:14:13.676] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:14:13.676] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:14:13.693] [info] [qrcode_scanner.cpp] data2 更新，检测到 三个投球框 的颜色顺序: Red,Blue
+[2026-07-22 00:14:13.696] [info] [SERIAL THREAD] 相机 OK, 串口 ERROR, 有效信息 YES, 发送 2 and 255 FAILED
+[2026-07-22 00:14:13.841] [debug] 
+
+[2026-07-22 00:14:13.841] [info] [main.cpp] 当前计算帧率: 13.75 FPS
+[2026-07-22 00:14:14.179] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:14:14.179] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:14:14.398] [debug] 
+
+[2026-07-22 00:14:14.398] [info] [main.cpp] 当前计算帧率: 19.75 FPS
+[2026-07-22 00:14:14.683] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:14:14.683] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:14:14.919] [debug] 
+
+[2026-07-22 00:14:14.919] [info] [main.cpp] 当前计算帧率: 17.27 FPS
+[2026-07-22 00:14:15.187] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:14:15.187] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:14:15.267] [debug] 
+
+[2026-07-22 00:14:15.267] [warning] [main.cpp] 捕捉到退出信号(SIGINT)，准备退出程序...
+

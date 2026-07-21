@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "Ark_Scanner"
   "Ark_Scanner.pdb"
+  "CMakeFiles/Ark_Scanner.dir/src/logger.cpp.o"
+  "CMakeFiles/Ark_Scanner.dir/src/logger.cpp.o.d"
   "CMakeFiles/Ark_Scanner.dir/src/main.cpp.o"
   "CMakeFiles/Ark_Scanner.dir/src/main.cpp.o.d"
   "CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o"

@@ -1,0 +1,246 @@
+[2026-07-22 00:24:21.394] [debug] ================= [CONFIG LOADED] =================
+[2026-07-22 00:24:21.394] [debug]   Mode: PC
+[2026-07-22 00:24:21.394] [debug]   Camera ID : 0
+[2026-07-22 00:24:21.394] [debug]   Target Res: 1280x720
+[2026-07-22 00:24:21.394] [debug]   Target Fmt: MJPG
+[2026-07-22 00:24:21.394] [debug]   Target Brightness: 0
+[2026-07-22 00:24:21.394] [debug]   Target Contrast: 0
+[2026-07-22 00:24:21.394] [debug]   Model Path: ../models/detect.prototxt | ../models/detect.caffemodel | ../models/sr.prototxt | ../models/sr.caffemodel
+[2026-07-22 00:24:21.394] [debug] ===================================================
+[2026-07-22 00:24:21.398] [info] [qrcode_scanner.cpp] 微信模型加载成功
+[2026-07-22 00:24:21.520] [debug] 
+[2026-07-22 00:24:21.520] [debug] ================= [ACTUAL CAMERA STATUS] =================
+[2026-07-22 00:24:21.520] [debug]   Backend API   : V4L2
+[2026-07-22 00:24:21.520] [debug]   Resolution    : 1280x720
+[2026-07-22 00:24:21.520] [debug]   FPS           : 30
+[2026-07-22 00:24:21.520] [debug]   Video Format  : MJPG
+[2026-07-22 00:24:21.520] [debug]   Exposure      : 166
+[2026-07-22 00:24:21.520] [debug]   Brightness    : 0
+[2026-07-22 00:24:21.520] [debug]   Contrast      : 0
+[2026-07-22 00:24:21.520] [debug] ==========================================================
+[2026-07-22 00:24:21.520] [debug] [main.cpp] 相机初始化完毕, 按 'ESC' 或 'q' 退出
+
+[2026-07-22 00:24:21.520] [debug] ================= [SERIAL STATUS] =================
+[2026-07-22 00:24:21.520] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:21.520] [error]   is_serial_open: FAILED
+[2026-07-22 00:24:21.520] [debug] ===================================================
+
+[2026-07-22 00:24:21.520] [debug] [main.cpp] starting threads...
+
+[2026-07-22 00:24:21.520] [info] [SERIAL THREAD] 相机 OK, 串口 ERROR, 有效信息 NO, 发送 255 and 255 FAILED
+[2026-07-22 00:24:21.904] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:21.904] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:22.055] [debug] 
+
+[2026-07-22 00:24:22.055] [info] [main.cpp] 当前计算帧率: 5.61 FPS
+[2026-07-22 00:24:22.412] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:22.412] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:22.577] [debug] 
+
+[2026-07-22 00:24:22.577] [info] [main.cpp] 当前计算帧率: 17.25 FPS
+[2026-07-22 00:24:22.916] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:22.916] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:23.095] [debug] 
+
+[2026-07-22 00:24:23.095] [info] [main.cpp] 当前计算帧率: 17.36 FPS
+[2026-07-22 00:24:23.422] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:23.422] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:23.654] [debug] 
+
+[2026-07-22 00:24:23.654] [info] [main.cpp] 当前计算帧率: 16.12 FPS
+[2026-07-22 00:24:23.772] [info] [qrcode_scanner.cpp] data1 更新，检测到 基础框 和 核心框 的颜色: Red,Blue
+[2026-07-22 00:24:23.772] [info] [qrcode_scanner.cpp] data2 更新，检测到 三个投球框 的颜色顺序: Yellow,Blue,Red
+[2026-07-22 00:24:23.775] [info] [SERIAL THREAD] 相机 OK, 串口 ERROR, 有效信息 YES, 发送 2 and 4 FAILED
+[2026-07-22 00:24:23.927] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:23.927] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:24.154] [debug] 
+
+[2026-07-22 00:24:24.155] [info] [main.cpp] 当前计算帧率: 17.97 FPS
+[2026-07-22 00:24:24.432] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:24.432] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:24.671] [debug] 
+
+[2026-07-22 00:24:24.671] [info] [main.cpp] 当前计算帧率: 17.43 FPS
+[2026-07-22 00:24:24.936] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:24.936] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:25.194] [debug] 
+
+[2026-07-22 00:24:25.195] [info] [main.cpp] 当前计算帧率: 17.18 FPS
+[2026-07-22 00:24:25.440] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:25.440] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:25.715] [debug] 
+
+[2026-07-22 00:24:25.715] [info] [main.cpp] 当前计算帧率: 17.29 FPS
+[2026-07-22 00:24:25.944] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:25.944] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:26.235] [debug] 
+
+[2026-07-22 00:24:26.235] [info] [main.cpp] 当前计算帧率: 17.31 FPS
+[2026-07-22 00:24:26.447] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:26.447] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:26.756] [debug] 
+
+[2026-07-22 00:24:26.756] [info] [main.cpp] 当前计算帧率: 17.27 FPS
+[2026-07-22 00:24:26.948] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:26.948] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:27.362] [debug] 
+
+[2026-07-22 00:24:27.362] [info] [main.cpp] 当前计算帧率: 14.87 FPS
+[2026-07-22 00:24:27.452] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:27.453] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:27.883] [debug] 
+
+[2026-07-22 00:24:27.883] [info] [main.cpp] 当前计算帧率: 19.17 FPS
+[2026-07-22 00:24:27.958] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:27.958] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:28.393] [debug] 
+
+[2026-07-22 00:24:28.393] [info] [main.cpp] 当前计算帧率: 17.66 FPS
+[2026-07-22 00:24:28.464] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:28.464] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:28.908] [debug] 
+
+[2026-07-22 00:24:28.908] [info] [main.cpp] 当前计算帧率: 17.48 FPS
+[2026-07-22 00:24:28.968] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:28.968] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:29.430] [debug] 
+
+[2026-07-22 00:24:29.430] [info] [main.cpp] 当前计算帧率: 17.23 FPS
+[2026-07-22 00:24:29.472] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:29.472] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:29.950] [debug] 
+
+[2026-07-22 00:24:29.950] [info] [main.cpp] 当前计算帧率: 17.31 FPS
+[2026-07-22 00:24:29.976] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:29.976] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:30.476] [debug] 
+
+[2026-07-22 00:24:30.476] [info] [main.cpp] 当前计算帧率: 17.12 FPS
+[2026-07-22 00:24:30.481] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:30.481] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:30.985] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:30.986] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:30.996] [debug] 
+
+[2026-07-22 00:24:30.996] [info] [main.cpp] 当前计算帧率: 17.29 FPS
+[2026-07-22 00:24:31.492] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:31.493] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:31.539] [debug] 
+
+[2026-07-22 00:24:31.539] [info] [main.cpp] 当前计算帧率: 16.58 FPS
+[2026-07-22 00:24:31.996] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:31.997] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:32.045] [debug] 
+
+[2026-07-22 00:24:32.045] [info] [main.cpp] 当前计算帧率: 17.78 FPS
+[2026-07-22 00:24:32.501] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:32.501] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:32.567] [debug] 
+
+[2026-07-22 00:24:32.567] [info] [main.cpp] 当前计算帧率: 17.27 FPS
+[2026-07-22 00:24:33.006] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:33.006] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:33.091] [debug] 
+
+[2026-07-22 00:24:33.091] [info] [main.cpp] 当前计算帧率: 17.16 FPS
+[2026-07-22 00:24:33.511] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:33.511] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:33.614] [debug] 
+
+[2026-07-22 00:24:33.614] [info] [main.cpp] 当前计算帧率: 17.23 FPS
+[2026-07-22 00:24:34.015] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:34.015] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:34.135] [debug] 
+
+[2026-07-22 00:24:34.135] [info] [main.cpp] 当前计算帧率: 17.26 FPS
+[2026-07-22 00:24:34.519] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:34.519] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:34.686] [debug] 
+
+[2026-07-22 00:24:34.686] [info] [main.cpp] 当前计算帧率: 16.33 FPS
+[2026-07-22 00:24:35.024] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:35.024] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:35.191] [debug] 
+
+[2026-07-22 00:24:35.191] [info] [main.cpp] 当前计算帧率: 17.82 FPS
+[2026-07-22 00:24:35.527] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:35.528] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:35.700] [debug] 
+
+[2026-07-22 00:24:35.700] [info] [main.cpp] 当前计算帧率: 17.68 FPS
+[2026-07-22 00:24:36.032] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:36.032] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:36.226] [debug] 
+
+[2026-07-22 00:24:36.226] [info] [main.cpp] 当前计算帧率: 17.12 FPS
+[2026-07-22 00:24:36.536] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:36.536] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:36.762] [debug] 
+
+[2026-07-22 00:24:36.762] [info] [main.cpp] 当前计算帧率: 16.79 FPS
+[2026-07-22 00:24:37.040] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:37.040] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:37.297] [debug] 
+
+[2026-07-22 00:24:37.297] [info] [main.cpp] 当前计算帧率: 16.81 FPS
+[2026-07-22 00:24:37.544] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:37.544] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:37.810] [debug] 
+
+[2026-07-22 00:24:37.810] [info] [main.cpp] 当前计算帧率: 17.57 FPS
+[2026-07-22 00:24:38.048] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:38.048] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:38.313] [debug] 
+
+[2026-07-22 00:24:38.313] [info] [main.cpp] 当前计算帧率: 17.87 FPS
+[2026-07-22 00:24:38.553] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:38.553] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:38.856] [debug] 
+
+[2026-07-22 00:24:38.856] [info] [main.cpp] 当前计算帧率: 16.58 FPS
+[2026-07-22 00:24:39.058] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:39.058] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:39.364] [debug] 
+
+[2026-07-22 00:24:39.364] [info] [main.cpp] 当前计算帧率: 17.73 FPS
+[2026-07-22 00:24:39.562] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:39.562] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:39.883] [debug] 
+
+[2026-07-22 00:24:39.883] [info] [main.cpp] 当前计算帧率: 17.32 FPS
+[2026-07-22 00:24:40.065] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:40.065] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:40.409] [debug] 
+
+[2026-07-22 00:24:40.409] [info] [main.cpp] 当前计算帧率: 17.13 FPS
+[2026-07-22 00:24:40.569] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:40.569] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:40.927] [debug] 
+
+[2026-07-22 00:24:40.927] [info] [main.cpp] 当前计算帧率: 17.37 FPS
+[2026-07-22 00:24:41.073] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:41.073] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:41.452] [debug] 
+
+[2026-07-22 00:24:41.452] [info] [main.cpp] 当前计算帧率: 17.15 FPS
+[2026-07-22 00:24:41.577] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:41.577] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:41.975] [debug] 
+
+[2026-07-22 00:24:41.975] [info] [main.cpp] 当前计算帧率: 17.21 FPS
+[2026-07-22 00:24:42.080] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:42.080] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:42.498] [debug] 
+
+[2026-07-22 00:24:42.498] [info] [main.cpp] 当前计算帧率: 17.18 FPS
+[2026-07-22 00:24:42.584] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:42.584] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:43.019] [debug] 
+
+[2026-07-22 00:24:43.019] [info] [main.cpp] 当前计算帧率: 17.28 FPS
+[2026-07-22 00:24:43.089] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-22 00:24:43.089] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+[2026-07-22 00:24:43.343] [debug] 
+
+[2026-07-22 00:24:43.343] [warning] [main.cpp] 捕捉到退出信号(SIGINT)，准备退出程序...
+

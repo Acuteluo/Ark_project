@@ -12,8 +12,8 @@ struct SendPacket
     
     // --- 有效数据起 ---
 
-    uint8_t data1;         
-    uint8_t data2;
+    uint8_t data1;  // 有效信息 1：基础框 和 核心框 的颜色    
+    uint8_t data2;  // 有效数据 2：机器人面朝着的三个投球框对应的颜色
     
     // --- 有效数据止 ---
 

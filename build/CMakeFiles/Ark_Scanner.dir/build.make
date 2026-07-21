@@ -72,10 +72,24 @@ include CMakeFiles/Ark_Scanner.dir/flags.make
 CMakeFiles/Ark_Scanner.dir/codegen:
 .PHONY : CMakeFiles/Ark_Scanner.dir/codegen
 
+CMakeFiles/Ark_Scanner.dir/src/logger.cpp.o: CMakeFiles/Ark_Scanner.dir/flags.make
+CMakeFiles/Ark_Scanner.dir/src/logger.cpp.o: /home/cly/Ark_project/src/logger.cpp
+CMakeFiles/Ark_Scanner.dir/src/logger.cpp.o: CMakeFiles/Ark_Scanner.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/cly/Ark_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Ark_Scanner.dir/src/logger.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Ark_Scanner.dir/src/logger.cpp.o -MF CMakeFiles/Ark_Scanner.dir/src/logger.cpp.o.d -o CMakeFiles/Ark_Scanner.dir/src/logger.cpp.o -c /home/cly/Ark_project/src/logger.cpp
+
+CMakeFiles/Ark_Scanner.dir/src/logger.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Ark_Scanner.dir/src/logger.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cly/Ark_project/src/logger.cpp > CMakeFiles/Ark_Scanner.dir/src/logger.cpp.i
+
+CMakeFiles/Ark_Scanner.dir/src/logger.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Ark_Scanner.dir/src/logger.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cly/Ark_project/src/logger.cpp -o CMakeFiles/Ark_Scanner.dir/src/logger.cpp.s
+
 CMakeFiles/Ark_Scanner.dir/src/main.cpp.o: CMakeFiles/Ark_Scanner.dir/flags.make
 CMakeFiles/Ark_Scanner.dir/src/main.cpp.o: /home/cly/Ark_project/src/main.cpp
 CMakeFiles/Ark_Scanner.dir/src/main.cpp.o: CMakeFiles/Ark_Scanner.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/cly/Ark_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Ark_Scanner.dir/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/cly/Ark_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Ark_Scanner.dir/src/main.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Ark_Scanner.dir/src/main.cpp.o -MF CMakeFiles/Ark_Scanner.dir/src/main.cpp.o.d -o CMakeFiles/Ark_Scanner.dir/src/main.cpp.o -c /home/cly/Ark_project/src/main.cpp
 
 CMakeFiles/Ark_Scanner.dir/src/main.cpp.i: cmake_force
@@ -89,7 +103,7 @@ CMakeFiles/Ark_Scanner.dir/src/main.cpp.s: cmake_force
 CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o: CMakeFiles/Ark_Scanner.dir/flags.make
 CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o: /home/cly/Ark_project/src/qrcode_scanner.cpp
 CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o: CMakeFiles/Ark_Scanner.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/cly/Ark_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/cly/Ark_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o -MF CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o.d -o CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o -c /home/cly/Ark_project/src/qrcode_scanner.cpp
 
 CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.i: cmake_force
@@ -103,7 +117,7 @@ CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.s: cmake_force
 CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.o: CMakeFiles/Ark_Scanner.dir/flags.make
 CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.o: /home/cly/Ark_project/src/serial_port.cpp
 CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.o: CMakeFiles/Ark_Scanner.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/cly/Ark_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/cly/Ark_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.o -MF CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.o.d -o CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.o -c /home/cly/Ark_project/src/serial_port.cpp
 
 CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.i: cmake_force
@@ -116,6 +130,7 @@ CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.s: cmake_force
 
 # Object files for target Ark_Scanner
 Ark_Scanner_OBJECTS = \
+"CMakeFiles/Ark_Scanner.dir/src/logger.cpp.o" \
 "CMakeFiles/Ark_Scanner.dir/src/main.cpp.o" \
 "CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o" \
 "CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.o"
@@ -123,6 +138,7 @@ Ark_Scanner_OBJECTS = \
 # External object files for target Ark_Scanner
 Ark_Scanner_EXTERNAL_OBJECTS =
 
+Ark_Scanner: CMakeFiles/Ark_Scanner.dir/src/logger.cpp.o
 Ark_Scanner: CMakeFiles/Ark_Scanner.dir/src/main.cpp.o
 Ark_Scanner: CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o
 Ark_Scanner: CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.o
@@ -162,6 +178,7 @@ Ark_Scanner: /usr/local/lib/libopencv_wechat_qrcode.so.4.9.0
 Ark_Scanner: /usr/local/lib/libopencv_xfeatures2d.so.4.9.0
 Ark_Scanner: /usr/local/lib/libopencv_xobjdetect.so.4.9.0
 Ark_Scanner: /usr/local/lib/libopencv_xphoto.so.4.9.0
+Ark_Scanner: /usr/lib/x86_64-linux-gnu/libspdlog.so.1.9.2
 Ark_Scanner: /usr/local/lib/libopencv_shape.so.4.9.0
 Ark_Scanner: /usr/local/lib/libopencv_highgui.so.4.9.0
 Ark_Scanner: /usr/local/lib/libopencv_datasets.so.4.9.0
@@ -182,8 +199,9 @@ Ark_Scanner: /usr/local/lib/libopencv_flann.so.4.9.0
 Ark_Scanner: /usr/local/lib/libopencv_photo.so.4.9.0
 Ark_Scanner: /usr/local/lib/libopencv_imgproc.so.4.9.0
 Ark_Scanner: /usr/local/lib/libopencv_core.so.4.9.0
+Ark_Scanner: /usr/lib/x86_64-linux-gnu/libfmt.so.8.1.1
 Ark_Scanner: CMakeFiles/Ark_Scanner.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/cly/Ark_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable Ark_Scanner"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/cly/Ark_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable Ark_Scanner"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Ark_Scanner.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

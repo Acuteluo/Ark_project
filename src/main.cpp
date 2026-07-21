@@ -7,9 +7,9 @@
 #include <chrono>
 #include <csignal> // 引入信号处理，用于树莓派无头模式下的 Ctrl+C 退出
 
-#include "qrcode_scanner.hpp"
-#include "serial_port.hpp"
-#include "color.hpp"
+#include "qrcode_scanner.hpp" // 二维码识别
+#include "serial_port.hpp"    // 串口通信
+#include "logger.hpp"         // 日志模块
 
 // ================= 运行模式配置 =================
 // true : 模式① 电脑端联调模式（显示UI画面，带有深拷贝与画框）
@@ -37,8 +37,8 @@ std::atomic<bool> g_running{true}; // 控制所有线程退出的原子变量
 // 捕获 Ctrl+C 信号，确保无UI模式下能优雅退出
 void signalHandler(int signum)
 {
-    std::cout << std::endl;
-    std::cout << YELLOW << "[main.cpp] 捕捉到退出信号(SIGINT)，准备退出程序..." << NONE << std::endl;
+    LOG_DEBUG("\n");
+    LOG_WARN("[main.cpp] 捕捉到退出信号(SIGINT)，准备退出程序...\n");
     g_running = false;
 }
 
@@ -78,7 +78,7 @@ void VisionThread(QRCodeScanner* scanner)
         if (!process_frame.empty())
         {
             // 处理图像，如果 g_show_gui 那就直接修改
-            scanner->processFrame(process_frame, g_show_gui);
+            scanner->ProcessFrame(process_frame, g_show_gui);
 
             // 如果在电脑模式下，就再次加锁，将画好框的图传回给主线程用于显示，同时更新状态
             if (g_show_gui) 
@@ -94,16 +94,17 @@ void VisionThread(QRCodeScanner* scanner)
             if (elapsed_seconds >= 0.50) 
             {
                 double fps = frame_count / elapsed_seconds;
-                std::cout << std::endl << "---------------------------------------" << std::endl;
-                std::cout << "[VISION THREAD] 当前计算帧率: " << GREEN << fps << NONE << " FPS" << std::endl;
+                LOG_DEBUG("\n");
+                LOG_INFO("[main.cpp] 当前计算帧率: {:.2f} FPS", fps);
                 frame_count = 0;
                 fps_start_time = fps_current_time;
             }
 
-            // 把字符串数组拷贝进共享内存
-            g_data.qr_infos = scanner->getuint8t(); 
-
-            // std::cout << "[RESULT] 识别结果: " << int(g_data.qr_infos.first) << " and " << int(g_data.qr_infos.second) << std::endl;
+            // 把有效信息拷贝进共享内存，必须加锁！
+            {
+                std::lock_guard<std::mutex> lock(g_mtx);
+                g_data.qr_infos = scanner->GetResult(); 
+            }
         }
     }
 }
@@ -159,10 +160,10 @@ void SerialThread(SerialPort* serial)
         }
 
         // 4. 组合提示信息
-        std::string camera_status = std::string(is_camera_ok ? GREEN + "OK" + NONE : RED + "ERROR" + NONE);
-        std::string serial_status = std::string(serial->IsOpened() ? GREEN + "OK" + NONE : RED + "ERROR" + NONE);
-        std::string valid_infos_status = std::string(have_valid_infos ? GREEN + "YES" + NONE : RED + "NO" + NONE);
-        std::string send_status = std::string(send_feedback ? GREEN + "SUCCESSED" + NONE : RED + "FAILED" + NONE);
+        std::string camera_status = std::string(is_camera_ok ? "OK" : "ERROR");
+        std::string serial_status = std::string(serial->IsOpened() ? "OK" : "ERROR");
+        std::string valid_infos_status = std::string(have_valid_infos ? "YES" : "NO");
+        std::string send_status = std::string(send_feedback ? "SUCCESSED" : "FAILED");
 
         temp_message = "[SERIAL THREAD] 相机 " 
             + camera_status
@@ -174,7 +175,7 @@ void SerialThread(SerialPort* serial)
         // 假如这一次和上一次打印的提示信息不一样，就打印出来，一样就不打印，避免重复刷屏
         if (temp_message != prev_message)
         {
-            std::cout << temp_message << std::endl;
+            LOG_INFO("{}", temp_message.c_str());
             prev_message = temp_message;
         }
 
@@ -187,6 +188,9 @@ void SerialThread(SerialPort* serial)
 
 int main()
 {
+    // 配置全局 logger 输出等级
+    tools::logger()->set_level(spdlog::level::debug);
+
     // 注册系统信号，方便在树莓派后台运行时 Ctrl+C 正常关闭硬件
     signal(SIGINT, signalHandler);
 
@@ -196,7 +200,7 @@ int main()
     
     if (!fs.isOpened())
     {
-        std::cout << RED << "[main.cpp] 无法打开配置文件: " << config_path << NONE << std::endl;
+        LOG_ERROR("[main.cpp] 无法打开配置文件: {}", config_path);
         return -1;
     }
 
@@ -224,21 +228,22 @@ int main()
 
     fs.release();
 
-    std::cout << "================= [CONFIG LOADED] =================" << std::endl;
-    std::cout << (g_show_gui ? "  Mode: PC" : "  Mode: Raspberry Pi") << std::endl;
-    std::cout << "  Camera ID : " << camera_id << std::endl;
-    std::cout << "  Target Res: " << cam_width << "x" << cam_height << std::endl;
-    std::cout << "  Target Fmt: " << cam_format << std::endl;
-    std::cout << "  Target Brightness: " << cam_brightness << std::endl;
-    std::cout << "  Target Contrast  : " << cam_contrast << std::endl;
-    std::cout << "  Model Path: " << detect_prototxt << " | " << detect_caffe << " | " << sr_prototxt << " | " << sr_caffe << std::endl;
-    std::cout << "===================================================" << std::endl;
+    LOG_DEBUG("================= [CONFIG LOADED] =================");
+    LOG_DEBUG("  Mode: {}", g_show_gui ? "PC" : "Raspberry Pi");
+    LOG_DEBUG("  Camera ID : {}", camera_id);
+    LOG_DEBUG("  Target Res: {}x{}", cam_width, cam_height);
+    LOG_DEBUG("  Target Fmt: {}", cam_format);
+    LOG_DEBUG("  Target Brightness: {}", cam_brightness);
+    LOG_DEBUG("  Target Contrast: {}", cam_contrast);
+    LOG_DEBUG("  Model Path: {} | {} | {} | {}", detect_prototxt, detect_caffe, sr_prototxt, sr_caffe);
+    LOG_DEBUG("===================================================");
+
 
     // 2. 初始化二维码扫描器
     QRCodeScanner scanner;
-    if (!scanner.initModel(detect_prototxt, detect_caffe, sr_prototxt, sr_caffe))
+    if (!scanner.InitModel(detect_prototxt, detect_caffe, sr_prototxt, sr_caffe))
     {
-        std::cout << RED << "[main.cpp] QRCodeScanner scanner initialization failed, exiting program." << NONE << std::endl;
+        LOG_ERROR("[main.cpp] QRCodeScanner scanner initialization failed, exiting program.");
         return -1;
     }
 
@@ -289,25 +294,24 @@ int main()
         double exposure = cap.get(cv::CAP_PROP_EXPOSURE);
         std::string backend_name = cap.getBackendName(); // 例如 V4L2
 
-        std::cout << std::endl;
-        std::cout << "================= [ACTUAL CAMERA STATUS] =================" << std::endl;
-        std::cout << "  Backend API   : " << backend_name << std::endl;
-        std::cout << "  Resolution    : " << actual_width << "x" << actual_height << std::endl;
-        std::cout << "  FPS           : " << actual_fps << std::endl;
-        std::cout << "  Video Format  : " << (strlen(actual_fourcc) > 0 ? actual_fourcc : "Unknown") << std::endl;
-        std::cout << "  Exposure      : " << exposure << std::endl;
-        std::cout << "  Brightness    : " << actual_brightness << std::endl;
-        std::cout << "  Contrast      : " << actual_contrast << std::endl;
-        std::cout << "==========================================================" << std::endl;
+        LOG_DEBUG("");
+        LOG_DEBUG("================= [ACTUAL CAMERA STATUS] =================");
+        LOG_DEBUG("  Backend API   : {}", backend_name);
+        LOG_DEBUG("  Resolution    : {}x{}", actual_width, actual_height);
+        LOG_DEBUG("  FPS           : {}", actual_fps);
+        LOG_DEBUG("  Video Format  : {}", (strlen(actual_fourcc) > 0 ? actual_fourcc : "Unknown"));
+        LOG_DEBUG("  Exposure      : {}", exposure);
+        LOG_DEBUG("  Brightness    : {}", actual_brightness);
+        LOG_DEBUG("  Contrast      : {}", actual_contrast);
+        LOG_DEBUG("==========================================================");
+        LOG_DEBUG("[main.cpp] 相机初始化完毕, {}\n", (g_show_gui ? "按 'ESC' 或 'q' 退出" : "按 'Ctrl+C' 退出"));
 
-        std::cout << "[main.cpp] 相机初始化完毕, " << (g_show_gui ? "按 'ESC' 或 'q' 退出" : "按 'Ctrl+C' 退出") << std::endl;
-        std::cout << std::endl;
         return true;
     };
 
     if (!openCamera())
     {
-        std::cout << RED << "[main.cpp] 初始打开相机失败, ID: " << camera_id << NONE << std::endl;
+        LOG_ERROR("[main.cpp] 初始打开相机失败, ID: {}", camera_id);
         g_data.is_camera_connected = false;
         // 这里不再 return -1 直接退出程序，而是让它进入下方的主循环，自动开始 0.5s 间隔的重连
     }
@@ -318,27 +322,26 @@ int main()
 
     // 4. 读取串口配置，并初始化串口
     
-    std::cout << "================= [SERIAL STATUS] =================" << std::endl;
+    LOG_DEBUG("================= [SERIAL STATUS] =================");
     bool is_serial_open = serial.OpenPort();
     if (is_serial_open)
     {
-        std::cout << "  is_serial_open: SUCCESS" << std::endl;
-        std::cout << "  Port Name     : " << port_name << std::endl;
-        std::cout << "  Baud Rate     : " << baud_rate << std::endl;
+        LOG_INFO("  is_serial_open: SUCCESS");
+        LOG_DEBUG("  Port Name     : {}", port_name);
+        LOG_DEBUG("  Baud Rate     : {}", baud_rate);
     }
     else
     {
-        std::cout << YELLOW << "  is_serial_open: FAILED" << NONE << std::endl;
+        LOG_ERROR("  is_serial_open: FAILED");
     }
-    std::cout << "===================================================" << std::endl;
-    std::cout << std::endl;
+    LOG_DEBUG("===================================================\n");
 
      
     // 5. 启动子线程  
     std::thread vision_thread(VisionThread, &scanner); // 启动视觉识别线程
     std::thread serial_thread(SerialThread, &serial);  // 启动串口发送线程 
 
-    std::cout << "[main.cpp] started threads" << std::endl;
+    LOG_DEBUG("[main.cpp] starting threads...\n");
 
 
     // 6. 主循环
@@ -350,13 +353,13 @@ int main()
     {
         if (!g_data.is_camera_connected)
         {
-            std::cout << "---------------------------------------" << std::endl;
-            std::cout << YELLOW << "[main.cpp] 相机已断开, 0.5s 后尝试重新连接..." << NONE << std::endl;
+            LOG_DEBUG("---------------------------------------");
+            LOG_WARN("[main.cpp] 相机已断开, 0.5s 后尝试重新连接...");
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             
             if (openCamera()) 
             {
-                std::cout << GREEN << "[main.cpp] 相机重连成功，恢复视觉流！" << NONE << std::endl;
+                LOG_INFO("[main.cpp] 相机重连成功，恢复视觉流！");
                 std::lock_guard<std::mutex> lock(g_mtx);
                 g_data.is_camera_connected = true;
                 empty_frame_count = 0; // 重置防抖计数
@@ -373,7 +376,7 @@ int main()
             // 连续 5 帧拉取不到图像，才判定为相机被物理拔出（机器人行进中由于震动导致的偶发掉帧）
             if (empty_frame_count >= 5) 
             {
-                std::cout << RED << "[main.cpp] 连续读取空帧，相机物理掉线！" << NONE << std::endl;
+                LOG_ERROR("[main.cpp] 连续读取空帧，相机物理掉线！");
                 std::lock_guard<std::mutex> lock(g_mtx);
                 g_data.is_camera_connected = false; // 触发掉线
             }
