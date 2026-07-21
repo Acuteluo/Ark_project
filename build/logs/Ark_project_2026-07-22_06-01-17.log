@@ -1,0 +1,45 @@
+[2026-07-22 06:01:17.182] [debug] ================= [CONFIG LOADED] =================
+[2026-07-22 06:01:17.182] [debug]   Mode: PC
+[2026-07-22 06:01:17.182] [debug]   Camera ID : 2
+[2026-07-22 06:01:17.182] [debug]   Target Res: 1280x720
+[2026-07-22 06:01:17.182] [debug]   Target Fmt: MJPG
+[2026-07-22 06:01:17.182] [debug]   Target Brightness: 0
+[2026-07-22 06:01:17.182] [debug]   Target Contrast: 0
+[2026-07-22 06:01:17.182] [debug]   Model Path: ../models/detect.prototxt | ../models/detect.caffemodel | ../models/sr.prototxt | ../models/sr.caffemodel
+[2026-07-22 06:01:17.182] [debug] ===================================================
+[2026-07-22 06:01:17.186] [info] [qrcode_scanner.cpp] 微信模型加载成功
+[2026-07-22 06:01:17.382] [debug] 
+[2026-07-22 06:01:17.382] [debug] ================= [ACTUAL CAMERA STATUS] =================
+[2026-07-22 06:01:17.382] [debug]   Backend API   : V4L2
+[2026-07-22 06:01:17.382] [debug]   Resolution    : 1280x720
+[2026-07-22 06:01:17.382] [debug]   FPS           : 30
+[2026-07-22 06:01:17.382] [debug]   Video Format  : MJPG
+[2026-07-22 06:01:17.382] [debug]   Exposure      : 156
+[2026-07-22 06:01:17.382] [debug]   Brightness    : 0
+[2026-07-22 06:01:17.382] [debug]   Contrast      : 0
+[2026-07-22 06:01:17.382] [debug] ==========================================================
+[2026-07-22 06:01:17.382] [debug] [main.cpp] 相机初始化完毕, 按 'ESC' 或 'q' 退出
+
+[2026-07-22 06:01:17.382] [debug] ================= [SERIAL STATUS] =================
+[2026-07-22 06:01:17.382] [info] [serial_port.cpp] 串口 /dev/ttyACM0 打开成功，波特率: 115200
+[2026-07-22 06:01:17.382] [info]   is_serial_open: SUCCESS
+[2026-07-22 06:01:17.382] [debug]   Port Name     : /dev/ttyACM0
+[2026-07-22 06:01:17.382] [debug]   Baud Rate     : 115200
+[2026-07-22 06:01:17.382] [debug] ===================================================
+
+[2026-07-22 06:01:17.383] [debug] [main.cpp] starting threads...
+
+[2026-07-22 06:01:17.383] [info] [SERIAL THREAD] 相机 OK, 串口 OK, 有效信息 NO, 发送 255 and 255 SUCCESSED
+[2026-07-22 06:01:27.315] [info] [qrcode_scanner.cpp] data1 更新，检测到 基础框 和 核心框 的颜色: Yellow,Blue
+[2026-07-22 06:01:27.316] [info] [SERIAL THREAD] 相机 OK, 串口 OK, 有效信息 YES, 发送 4 and 255 SUCCESSED
+[2026-07-22 06:01:42.462] [info] [qrcode_scanner.cpp] data2 更新，检测到 三个投球框 的颜色顺序: Red,Yellow,Blue
+[2026-07-22 06:01:42.469] [info] [SERIAL THREAD] 相机 OK, 串口 OK, 有效信息 YES, 发送 4 and 1 SUCCESSED
+[2026-07-22 06:01:42.513] [info] [qrcode_scanner.cpp] data1 更新，检测到 基础框 和 核心框 的颜色: Yellow,Red
+[2026-07-22 06:01:42.519] [info] [SERIAL THREAD] 相机 OK, 串口 OK, 有效信息 YES, 发送 3 and 1 SUCCESSED
+[2026-07-22 06:02:07.373] [info] [qrcode_scanner.cpp] data2 更新，检测到 三个投球框 的颜色顺序: Blue,Yellow,Red
+[2026-07-22 06:02:07.374] [info] [SERIAL THREAD] 相机 OK, 串口 OK, 有效信息 YES, 发送 3 and 6 SUCCESSED
+[2026-07-22 06:02:38.950] [debug] 
+
+[2026-07-22 06:02:38.950] [warning] [main.cpp] 捕捉到退出信号(SIGINT)，准备退出程序...
+
+[2026-07-22 06:02:39.057] [warning] [serial_port.cpp] 串口已关闭。

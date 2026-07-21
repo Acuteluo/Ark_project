@@ -94,8 +94,8 @@ void VisionThread(QRCodeScanner* scanner)
             if (elapsed_seconds >= 1.00) 
             {
                 double fps = frame_count / elapsed_seconds;
-                LOG_DEBUG("\n");
-                LOG_INFO("[main.cpp] 当前计算帧率: {:.2f} FPS", fps);
+                // LOG_DEBUG("\n");
+                // LOG_INFO("[main.cpp] 当前计算帧率: {:.2f} FPS", fps);
                 frame_count = 0;
                 fps_start_time = fps_current_time;
             }
