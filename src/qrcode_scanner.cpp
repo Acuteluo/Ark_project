@@ -144,11 +144,11 @@ void QRCodeScanner::DecodeColorInfos(cv::Mat& frame, const std::vector<std::stri
             {
                 data2 = 0x04; 
             }
-            else if (blue_position < yellow_position && yellow_position < red_position) // 0x05：Blue,Yellow,Red
+            else if (blue_position < red_position && red_position < yellow_position)    // 0x05：Blue,Red,Yellow
             {
                 data2 = 0x05; 
             }
-            else if (blue_position < red_position && red_position < yellow_position)    // 0x06：Blue,Red,Yellow
+            else if (blue_position < yellow_position && yellow_position < red_position) // 0x06：Blue,Yellow,Red
             {
                 data2 = 0x06; 
             }

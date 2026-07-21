@@ -91,7 +91,7 @@ void VisionThread(QRCodeScanner* scanner)
             ++frame_count;
             auto fps_current_time = std::chrono::steady_clock::now();
             double elapsed_seconds = std::chrono::duration<double>(fps_current_time - fps_start_time).count();
-            if (elapsed_seconds >= 0.50) 
+            if (elapsed_seconds >= 1.00) 
             {
                 double fps = frame_count / elapsed_seconds;
                 LOG_DEBUG("\n");
