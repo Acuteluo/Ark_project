@@ -128,19 +128,19 @@ CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cly/Ark_project/src/serial_port.cpp -o CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.s
 
-CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.o: CMakeFiles/Ark_Scanner.dir/flags.make
-CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.o: /home/cly/Ark_project/src/stream_thread.cpp
-CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.o: CMakeFiles/Ark_Scanner.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/cly/Ark_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.o -MF CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.o.d -o CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.o -c /home/cly/Ark_project/src/stream_thread.cpp
+CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.o: CMakeFiles/Ark_Scanner.dir/flags.make
+CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.o: /home/cly/Ark_project/src/http_stream_thread.cpp
+CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.o: CMakeFiles/Ark_Scanner.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/cly/Ark_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.o -MF CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.o.d -o CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.o -c /home/cly/Ark_project/src/http_stream_thread.cpp
 
-CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cly/Ark_project/src/stream_thread.cpp > CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.i
+CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cly/Ark_project/src/http_stream_thread.cpp > CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.i
 
-CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cly/Ark_project/src/stream_thread.cpp -o CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.s
+CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cly/Ark_project/src/http_stream_thread.cpp -o CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.s
 
 # Object files for target Ark_Scanner
 Ark_Scanner_OBJECTS = \
@@ -148,7 +148,7 @@ Ark_Scanner_OBJECTS = \
 "CMakeFiles/Ark_Scanner.dir/src/main.cpp.o" \
 "CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o" \
 "CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.o" \
-"CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.o"
+"CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.o"
 
 # External object files for target Ark_Scanner
 Ark_Scanner_EXTERNAL_OBJECTS =
@@ -157,7 +157,7 @@ Ark_Scanner: CMakeFiles/Ark_Scanner.dir/src/logger.cpp.o
 Ark_Scanner: CMakeFiles/Ark_Scanner.dir/src/main.cpp.o
 Ark_Scanner: CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o
 Ark_Scanner: CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.o
-Ark_Scanner: CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.o
+Ark_Scanner: CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.o
 Ark_Scanner: CMakeFiles/Ark_Scanner.dir/build.make
 Ark_Scanner: /usr/local/lib/libopencv_gapi.so.4.9.0
 Ark_Scanner: /usr/local/lib/libopencv_stitching.so.4.9.0

@@ -25,7 +25,7 @@ bool SerialPort::OpenPort()
     {
         LOG_ERROR("[serial_port.cpp] 无法打开串口 {}\n", port_name_);
         return false;
-    }
+    } 
 
     // 恢复串口为阻塞状态
     fcntl(fd_, F_SETFL, 0);

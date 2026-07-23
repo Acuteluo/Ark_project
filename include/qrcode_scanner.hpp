@@ -29,6 +29,13 @@ public:
     // 提供外部获取历史记录的接口 
     std::pair<uint8_t, uint8_t> GetResult();
 
+    // 存储获得的两个带有有效信息的字符串
+    std::string valid_info1_ = "";
+    std::string valid_info2_ = "";
+
+    std::string GetValidInfo1();
+    std::string GetValidInfo2();
+
 private:
     // 微信二维码检测器智能指针
     cv::Ptr<cv::wechat_qrcode::WeChatQRCode> detector;
@@ -44,9 +51,6 @@ private:
     // 存储目标 uint8_t 信息
     std::pair<uint8_t, uint8_t> color_infos_ = std::make_pair(0xFF, 0xFF);
 
-    // 存储获得的两个带有有效信息的字符串
-    std::string valid_info1_ = "";
-    std::string valid_info2_ = "";
 };
 
 #endif // QRCODE_SCANNER_HPP

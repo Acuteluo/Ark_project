@@ -183,6 +183,7 @@ void QRCodeScanner::DrawResults(cv::Mat& frame,
     // 定义橙色
     cv::Scalar orange(0, 165, 255);
     cv::Scalar green(0, 255, 0);
+    cv::Scalar red(0, 0, 255);
 
     // 遍历所有检测到的二维码，画橙色框和打印信息
     for (size_t i = 0; i < decoded_info.size(); i++)
@@ -222,30 +223,42 @@ void QRCodeScanner::DrawResults(cv::Mat& frame,
         
     }
 
-    // 在图上显示目前检测到的二维码数量
-    cv::Point2f printinfo1_position(20, 50);
-    cv::Point2f printinfo2_position(20, 100);
-    std::string printinfo1 = "INFO 1 = NO INFO";
-    std::string printinfo2 = "INFO 2 = NO INFO";
+    // // 在图上显示目前检测到的二维码数量
+    // cv::Point2f printinfo1_position(20, 50);
+    // cv::Point2f printinfo2_position(20, 100);
+    // std::string printinfo1 = "INFO 1 = NO INFO";
+    // std::string printinfo2 = "INFO 2 = NO INFO";
 
-    if (color_infos_.first != 0xFF)
-    {
-        printinfo1 = "INFO 1 = " + valid_info1_;
-    }
+    // if (color_infos_.first != 0xFF)
+    // {
+    //     printinfo1 = "INFO 1 = " + valid_info1_;
+    // }
 
-    if (color_infos_.second != 0xFF)
-    {
-        printinfo2 = "INFO 2 = " + valid_info2_;
-    }
+    // if (color_infos_.second != 0xFF)
+    // {
+    //     printinfo2 = "INFO 2 = " + valid_info2_;
+    // }
     
-    cv::putText(frame, printinfo1, printinfo1_position, cv::FONT_HERSHEY_SIMPLEX, 
-                    1.5, green, 2, cv::LINE_AA);
-    cv::putText(frame, printinfo2, printinfo2_position, cv::FONT_HERSHEY_SIMPLEX, 
-                    1.5, green, 2, cv::LINE_AA);
+    // cv::putText(frame, printinfo1, printinfo1_position, cv::FONT_HERSHEY_SIMPLEX, 
+    //                 1.5, red, 2, cv::LINE_AA);
+    // cv::putText(frame, printinfo2, printinfo2_position, cv::FONT_HERSHEY_SIMPLEX, 
+    //                 1.5, red, 2, cv::LINE_AA);
 }
 
 
 std::pair<uint8_t, uint8_t> QRCodeScanner::GetResult()
 {
     return color_infos_;
+}
+
+
+std::string QRCodeScanner::GetValidInfo1()
+{ 
+    return "INFO 1 = " + valid_info1_; 
+}
+
+std::string QRCodeScanner::GetValidInfo2()
+
+{ 
+    return "INFO 2 = " + valid_info2_; 
 }

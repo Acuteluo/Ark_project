@@ -27,7 +27,7 @@ Mode:
 
 # 图传设置
 Stream:
-  Port: 8888
-  Width: 640
-  Height: 360
+  Port: 5000
+  Width: 960
+  Height: 540
   Quality: 60    # JPG 压缩质量 (0-100)，推荐 50-70

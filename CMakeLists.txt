@@ -27,7 +27,7 @@ add_executable(Ark_Scanner
     src/main.cpp 
     src/qrcode_scanner.cpp
     src/serial_port.cpp 
-    src/stream_thread.cpp
+    src/http_stream_thread.cpp
 )
 
 # 链接库

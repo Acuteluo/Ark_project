@@ -8,11 +8,11 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/cly/Ark_project/src/http_stream_thread.cpp" "CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.o" "gcc" "CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.o.d"
   "/home/cly/Ark_project/src/logger.cpp" "CMakeFiles/Ark_Scanner.dir/src/logger.cpp.o" "gcc" "CMakeFiles/Ark_Scanner.dir/src/logger.cpp.o.d"
   "/home/cly/Ark_project/src/main.cpp" "CMakeFiles/Ark_Scanner.dir/src/main.cpp.o" "gcc" "CMakeFiles/Ark_Scanner.dir/src/main.cpp.o.d"
   "/home/cly/Ark_project/src/qrcode_scanner.cpp" "CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o" "gcc" "CMakeFiles/Ark_Scanner.dir/src/qrcode_scanner.cpp.o.d"
   "/home/cly/Ark_project/src/serial_port.cpp" "CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.o" "gcc" "CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.o.d"
-  "/home/cly/Ark_project/src/stream_thread.cpp" "CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.o" "gcc" "CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

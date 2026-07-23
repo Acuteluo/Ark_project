@@ -174,6 +174,30 @@ Ark_Scanner/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ark_Scanner.dir/build.make CMakeFiles/Ark_Scanner.dir/build
 .PHONY : Ark_Scanner/fast
 
+src/http_stream_thread.o: src/http_stream_thread.cpp.o
+.PHONY : src/http_stream_thread.o
+
+# target to build an object file
+src/http_stream_thread.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ark_Scanner.dir/build.make CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.o
+.PHONY : src/http_stream_thread.cpp.o
+
+src/http_stream_thread.i: src/http_stream_thread.cpp.i
+.PHONY : src/http_stream_thread.i
+
+# target to preprocess a source file
+src/http_stream_thread.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ark_Scanner.dir/build.make CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.i
+.PHONY : src/http_stream_thread.cpp.i
+
+src/http_stream_thread.s: src/http_stream_thread.cpp.s
+.PHONY : src/http_stream_thread.s
+
+# target to generate assembly for a file
+src/http_stream_thread.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ark_Scanner.dir/build.make CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.s
+.PHONY : src/http_stream_thread.cpp.s
+
 src/logger.o: src/logger.cpp.o
 .PHONY : src/logger.o
 
@@ -270,30 +294,6 @@ src/serial_port.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ark_Scanner.dir/build.make CMakeFiles/Ark_Scanner.dir/src/serial_port.cpp.s
 .PHONY : src/serial_port.cpp.s
 
-src/stream_thread.o: src/stream_thread.cpp.o
-.PHONY : src/stream_thread.o
-
-# target to build an object file
-src/stream_thread.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ark_Scanner.dir/build.make CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.o
-.PHONY : src/stream_thread.cpp.o
-
-src/stream_thread.i: src/stream_thread.cpp.i
-.PHONY : src/stream_thread.i
-
-# target to preprocess a source file
-src/stream_thread.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ark_Scanner.dir/build.make CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.i
-.PHONY : src/stream_thread.cpp.i
-
-src/stream_thread.s: src/stream_thread.cpp.s
-.PHONY : src/stream_thread.s
-
-# target to generate assembly for a file
-src/stream_thread.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ark_Scanner.dir/build.make CMakeFiles/Ark_Scanner.dir/src/stream_thread.cpp.s
-.PHONY : src/stream_thread.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -307,6 +307,9 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... Ark_Scanner"
+	@echo "... src/http_stream_thread.o"
+	@echo "... src/http_stream_thread.i"
+	@echo "... src/http_stream_thread.s"
 	@echo "... src/logger.o"
 	@echo "... src/logger.i"
 	@echo "... src/logger.s"
@@ -319,9 +322,6 @@ help:
 	@echo "... src/serial_port.o"
 	@echo "... src/serial_port.i"
 	@echo "... src/serial_port.s"
-	@echo "... src/stream_thread.o"
-	@echo "... src/stream_thread.i"
-	@echo "... src/stream_thread.s"
 .PHONY : help
 
 

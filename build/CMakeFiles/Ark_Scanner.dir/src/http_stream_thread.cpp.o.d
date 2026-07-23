@@ -1,5 +1,7 @@
-CMakeFiles/Ark_Scanner.dir/src/main.cpp.o: \
- /home/cly/Ark_project/src/main.cpp /usr/include/stdc-predef.h \
+CMakeFiles/Ark_Scanner.dir/src/http_stream_thread.cpp.o: \
+ /home/cly/Ark_project/src/http_stream_thread.cpp \
+ /usr/include/stdc-predef.h \
+ /home/cly/Ark_project/include/http_stream_thread.hpp \
  /usr/local/include/opencv4/opencv2/opencv.hpp \
  /usr/local/include/opencv4/opencv2/opencv_modules.hpp \
  /usr/local/include/opencv4/opencv2/core.hpp \
@@ -358,41 +360,8 @@ CMakeFiles/Ark_Scanner.dir/src/main.cpp.o: \
  /usr/local/include/opencv4/opencv2/video/tracking.hpp \
  /usr/local/include/opencv4/opencv2/video/background_segm.hpp \
  /usr/include/c++/11/thread /usr/include/c++/11/bits/std_thread.h \
- /usr/include/c++/11/bits/this_thread_sleep.h \
- /usr/include/c++/11/condition_variable /usr/include/c++/11/atomic \
- /usr/include/c++/11/csignal /usr/include/signal.h \
- /usr/include/x86_64-linux-gnu/bits/signum-generic.h \
- /usr/include/x86_64-linux-gnu/bits/signum-arch.h \
- /usr/include/x86_64-linux-gnu/bits/types/sig_atomic_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/siginfo_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/__sigval_t.h \
- /usr/include/x86_64-linux-gnu/bits/siginfo-arch.h \
- /usr/include/x86_64-linux-gnu/bits/siginfo-consts.h \
- /usr/include/x86_64-linux-gnu/bits/siginfo-consts-arch.h \
- /usr/include/x86_64-linux-gnu/bits/types/sigval_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/sigevent_t.h \
- /usr/include/x86_64-linux-gnu/bits/sigevent-consts.h \
- /usr/include/x86_64-linux-gnu/bits/sigaction.h \
- /usr/include/x86_64-linux-gnu/bits/sigcontext.h \
- /usr/include/x86_64-linux-gnu/bits/types/stack_t.h \
- /usr/include/x86_64-linux-gnu/sys/ucontext.h \
- /usr/include/x86_64-linux-gnu/bits/sigstack.h \
- /usr/include/x86_64-linux-gnu/bits/sigstksz.h /usr/include/unistd.h \
- /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
- /usr/include/x86_64-linux-gnu/bits/environments.h \
- /usr/include/x86_64-linux-gnu/bits/confname.h \
- /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
- /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
- /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
- /usr/include/linux/close_range.h \
- /usr/include/x86_64-linux-gnu/bits/ss_flags.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_sigstack.h \
- /usr/include/x86_64-linux-gnu/bits/sigthread.h \
- /usr/include/x86_64-linux-gnu/bits/signal_ext.h \
- /home/cly/Ark_project/include/qrcode_scanner.hpp \
- /usr/local/include/opencv4/opencv2/wechat_qrcode.hpp \
- /home/cly/Ark_project/include/serial_port.hpp \
- /home/cly/Ark_project/include/packet.hpp \
+ /usr/include/c++/11/bits/this_thread_sleep.h /usr/include/c++/11/atomic \
+ /usr/include/c++/11/condition_variable \
  /home/cly/Ark_project/include/logger.hpp /usr/include/spdlog/spdlog.h \
  /usr/include/spdlog/common.h /usr/include/spdlog/tweakme.h \
  /usr/include/spdlog/details/null_mutex.h /usr/include/spdlog/fmt/fmt.h \
@@ -405,8 +374,6 @@ CMakeFiles/Ark_Scanner.dir/src/main.cpp.o: \
  /usr/include/spdlog/details/circular_q.h /usr/include/c++/11/cassert \
  /usr/include/spdlog/version.h \
  /usr/include/spdlog/details/synchronous_factory.h \
- /home/cly/Ark_project/include/http_stream_thread.hpp \
- /home/cly/Ark_project/include/logger.hpp /usr/include/ifaddrs.h \
  /usr/include/x86_64-linux-gnu/sys/socket.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
  /usr/include/x86_64-linux-gnu/bits/socket.h \
@@ -423,7 +390,12 @@ CMakeFiles/Ark_Scanner.dir/src/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/asm/sockios.h \
  /usr/include/asm-generic/sockios.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/arpa/inet.h /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/netdb.h \
- /usr/include/rpc/netdb.h /usr/include/x86_64-linux-gnu/bits/netdb.h \
- /usr/include/net/if.h
+ /usr/include/netinet/in.h /usr/include/x86_64-linux-gnu/bits/in.h \
+ /usr/include/arpa/inet.h /usr/include/unistd.h \
+ /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
+ /usr/include/x86_64-linux-gnu/bits/environments.h \
+ /usr/include/x86_64-linux-gnu/bits/confname.h \
+ /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
+ /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
+ /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
+ /usr/include/linux/close_range.h

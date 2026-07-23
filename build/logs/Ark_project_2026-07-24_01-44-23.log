@@ -1,0 +1,52 @@
+[2026-07-24 01:44:23.506] [debug] ================= [CONFIG LOADED] =================
+[2026-07-24 01:44:23.506] [debug]   Mode: PC
+[2026-07-24 01:44:23.506] [debug]   Camera ID : 0
+[2026-07-24 01:44:23.506] [debug]   Target Res: 1280x720
+[2026-07-24 01:44:23.506] [debug]   Target Fmt: MJPG
+[2026-07-24 01:44:23.506] [debug]   Target Brightness: 0
+[2026-07-24 01:44:23.506] [debug]   Target Contrast: 0
+[2026-07-24 01:44:23.506] [debug]   Model Path: ../models/detect.prototxt | ../models/detect.caffemodel | ../models/sr.prototxt | ../models/sr.caffemodel
+
+[2026-07-24 01:44:23.506] [debug]   Stream        : Port=5000, Res=640x360, Quality=60
+[2026-07-24 01:44:23.506] [debug] ===================================================
+[2026-07-24 01:44:23.510] [info] [qrcode_scanner.cpp] 微信模型加载成功
+[2026-07-24 01:44:23.538] [debug] 
+[2026-07-24 01:44:23.538] [debug] ================= [ACTUAL CAMERA STATUS] =================
+[2026-07-24 01:44:23.538] [debug]   Backend API   : V4L2
+[2026-07-24 01:44:23.538] [debug]   Resolution    : 1280x720
+[2026-07-24 01:44:23.538] [debug]   FPS           : 30
+[2026-07-24 01:44:23.538] [debug]   Video Format  : MJPG
+[2026-07-24 01:44:23.538] [debug]   Exposure      : 166
+[2026-07-24 01:44:23.538] [debug]   Brightness    : 0
+[2026-07-24 01:44:23.538] [debug]   Contrast      : 0
+[2026-07-24 01:44:23.538] [debug] ==========================================================
+[2026-07-24 01:44:23.539] [debug] [main.cpp] 相机初始化完毕, 按 'ESC' 或 'q' 退出
+
+[2026-07-24 01:44:23.539] [debug] ================= [SERIAL STATUS] =================
+[2026-07-24 01:44:23.539] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 01:44:23.539] [error]   is_serial_open: FAILED
+[2026-07-24 01:44:23.539] [debug] ===================================================
+
+[2026-07-24 01:44:23.539] [info] [HttpStream] HTTP 服务器启动，端口: 5000
+[2026-07-24 01:44:23.539] [info] [SERIAL THREAD] 相机 OK, 串口 ERROR, 有效信息 NO, 发送 255 and 255 FAILED
+[2026-07-24 01:44:23.539] [info] 本机局域网 IP: 10.62.146.83  (接口: wlp0s20f3)
+[2026-07-24 01:44:23.539] [debug] [main.cpp] starting 3 threads...
+
+[2026-07-24 01:44:24.009] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 01:44:24.010] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 01:44:24.514] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 01:44:24.514] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 01:44:25.018] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 01:44:25.018] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 01:44:25.523] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 01:44:25.524] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 01:44:25.675] [debug] 
+
+[2026-07-24 01:44:25.675] [warning] [main.cpp] 捕捉到退出信号(SIGINT)，准备退出程序...
+
+[2026-07-24 01:44:25.710] [info] [HttpStream] HTTP 服务器已停止。

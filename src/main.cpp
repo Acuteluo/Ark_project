@@ -10,7 +10,11 @@
 #include "qrcode_scanner.hpp" // 二维码识别
 #include "serial_port.hpp"    // 串口通信
 #include "logger.hpp"         // 日志模块
-#include "stream_thread.hpp"  // 图传模块
+#include "http_stream_thread.hpp" // http 模块
+#include <ifaddrs.h>   // 获取网络接口列表
+#include <arpa/inet.h>
+#include <netdb.h>     // 【新增】
+#include <net/if.h>    // 【新增】
 
 // ================= 运行模式配置 =================
 // true : 模式① 电脑端联调模式（显示UI画面，带有深拷贝与画框）
@@ -43,9 +47,43 @@ void signalHandler(int signum)
     g_running = false;
 }
 
+
+// 打印 ip 工具函数
+void print_local_ip() 
+{
+    struct ifaddrs *ifaddr, *ifa;
+    int family;
+    char host[NI_MAXHOST];
+
+    if (getifaddrs(&ifaddr) == -1) 
+    {
+        LOG_ERROR("获取网络接口失败");
+        return;
+    }
+
+    for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) 
+    {
+        if (ifa->ifa_addr == NULL) continue;
+        family = ifa->ifa_addr->sa_family;
+        // 只关心 IPv4 地址，且排除回环接口 lo
+        if (family == AF_INET && (ifa->ifa_flags & IFF_LOOPBACK) == 0) 
+        {
+            int s = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in),
+                                host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
+            if (s == 0) 
+            {
+                LOG_INFO("本机局域网 IP: {}  (接口: {})", host, ifa->ifa_name);
+            }
+        }
+    }
+    freeifaddrs(ifaddr);
+}
+
+
+
 // ================= 子线程 A: 视觉识别线程 =================
 // 把 streamer 作为参数传进来，用于图像流
-void VisionThread(QRCodeScanner* scanner, std::shared_ptr<StreamThread> streamer)
+void VisionThread(QRCodeScanner* scanner, std::shared_ptr<HttpStreamThread> streamer)
 {
     cv::Mat process_frame;
 
@@ -89,6 +127,10 @@ void VisionThread(QRCodeScanner* scanner, std::shared_ptr<StreamThread> streamer
             if (streamer) 
             {
                 streamer->UpdateFrame(process_frame);
+
+                std::string info1 = scanner->GetValidInfo1();
+                std::string info2 = scanner->GetValidInfo2();
+                streamer->UpdateOverlayText(info1, info2);
             }
 
             // 如果在电脑模式下，就再次加锁，将画好框的图传回给主线程用于显示，同时更新状态
@@ -338,11 +380,9 @@ int main()
         g_data.is_camera_connected = true; // 摄像头成功打开，设置标志位为 true
     }
 
-    // 3.new 实例化图传线程
-    // 使用 10.42.0.255 作为广播地址。只要你的笔记本连上了 Ark_Vision 热点，
-    // 监听 8888 端口就能收到图传，无论笔记本被分配了什么 IP。
-    std::shared_ptr<StreamThread> streamer = 
-        std::make_shared<StreamThread>("10.42.0.255", stream_port, stream_width, stream_height, stream_quality);
+    // 新方案：HTTP 服务器
+    std::shared_ptr<HttpStreamThread> streamer = 
+        std::make_shared<HttpStreamThread>(stream_port, stream_width, stream_height, stream_quality);
 
     // 4. 读取串口配置，并初始化串口
     
@@ -364,7 +404,8 @@ int main()
     // 5. 启动子线程  
     std::thread vision_thread(VisionThread, &scanner, streamer); // 启动视觉识别线程，把 streamer 传进 vision_thread
     std::thread serial_thread(SerialThread, &serial);  // 启动串口发送线程 
-    streamer->Start(); // 启动图传线程
+    streamer->Start(); // 启动 http图传 线程
+    print_local_ip();   // 打印出可访问的 IP
 
     LOG_DEBUG("[main.cpp] starting 3 threads...\n");
 
