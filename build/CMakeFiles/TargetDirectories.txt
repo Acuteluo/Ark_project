@@ -1,0 +1,7 @@
+/home/cly/Ark_project/build/CMakeFiles/Ark_Scanner.dir
+/home/cly/Ark_project/build/CMakeFiles/edit_cache.dir
+/home/cly/Ark_project/build/CMakeFiles/rebuild_cache.dir
+/home/cly/Ark_project/build/CMakeFiles/list_install_components.dir
+/home/cly/Ark_project/build/CMakeFiles/install.dir
+/home/cly/Ark_project/build/CMakeFiles/install/local.dir
+/home/cly/Ark_project/build/CMakeFiles/install/strip.dir

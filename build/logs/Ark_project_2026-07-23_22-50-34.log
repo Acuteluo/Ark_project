@@ -1,0 +1,51 @@
+[2026-07-23 22:50:34.574] [debug] ================= [CONFIG LOADED] =================
+[2026-07-23 22:50:34.574] [debug]   Mode: PC
+[2026-07-23 22:50:34.574] [debug]   Camera ID : 0
+[2026-07-23 22:50:34.574] [debug]   Target Res: 1280x720
+[2026-07-23 22:50:34.574] [debug]   Target Fmt: MJPG
+[2026-07-23 22:50:34.574] [debug]   Target Brightness: 0
+[2026-07-23 22:50:34.574] [debug]   Target Contrast: 0
+[2026-07-23 22:50:34.574] [debug]   Model Path: ../models/detect.prototxt | ../models/detect.caffemodel | ../models/sr.prototxt | ../models/sr.caffemodel
+
+[2026-07-23 22:50:34.574] [debug]   Stream        : Port=8888, Res=640x360, Quality=60
+[2026-07-23 22:50:34.574] [debug] ===================================================
+[2026-07-23 22:50:34.578] [info] [qrcode_scanner.cpp] 微信模型加载成功
+[2026-07-23 22:50:34.605] [debug] 
+[2026-07-23 22:50:34.605] [debug] ================= [ACTUAL CAMERA STATUS] =================
+[2026-07-23 22:50:34.605] [debug]   Backend API   : V4L2
+[2026-07-23 22:50:34.605] [debug]   Resolution    : 1280x720
+[2026-07-23 22:50:34.605] [debug]   FPS           : 30
+[2026-07-23 22:50:34.605] [debug]   Video Format  : MJPG
+[2026-07-23 22:50:34.605] [debug]   Exposure      : 166
+[2026-07-23 22:50:34.605] [debug]   Brightness    : 0
+[2026-07-23 22:50:34.605] [debug]   Contrast      : 0
+[2026-07-23 22:50:34.605] [debug] ==========================================================
+[2026-07-23 22:50:34.605] [debug] [main.cpp] 相机初始化完毕, 按 'ESC' 或 'q' 退出
+
+[2026-07-23 22:50:34.605] [debug] ================= [SERIAL STATUS] =================
+[2026-07-23 22:50:34.605] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-23 22:50:34.605] [error]   is_serial_open: FAILED
+[2026-07-23 22:50:34.605] [debug] ===================================================
+
+[2026-07-23 22:50:34.605] [info] [Stream] 图传线程已启动，目标 10.42.0.255:8888
+[2026-07-23 22:50:34.606] [debug] [main.cpp] starting 3 threads...
+
+[2026-07-23 22:50:34.606] [info] [SERIAL THREAD] 相机 OK, 串口 ERROR, 有效信息 NO, 发送 255 and 255 FAILED
+[2026-07-23 22:50:35.076] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-23 22:50:35.076] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-23 22:50:35.582] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-23 22:50:35.582] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-23 22:50:36.087] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-23 22:50:36.087] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-23 22:50:36.594] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-23 22:50:36.594] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-23 22:50:36.820] [debug] 
+
+[2026-07-23 22:50:36.820] [warning] [main.cpp] 捕捉到退出信号(SIGINT)，准备退出程序...
+
+[2026-07-23 22:50:36.863] [info] [Stream] 图传线程已安全停止。
