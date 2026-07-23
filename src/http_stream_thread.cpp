@@ -226,15 +226,16 @@ void HttpStreamThread::HandleClient(int client_sock)
         // ===== 绘制叠加文本（左下角）=====
         {
             std::lock_guard<std::mutex> lock(text_mutex_);
+            cv::Scalar color(255, 255, 0);
             if (!overlay_text1_.empty()) 
             {
                 cv::putText(resized, overlay_text1_, cv::Point(10, 30),
-                            cv::FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0, 0, 255), 2);
+                            cv::FONT_HERSHEY_SIMPLEX, 0.8, color, 2);
             }
             if (!overlay_text2_.empty()) 
             {
                 cv::putText(resized, overlay_text2_, cv::Point(10, 60),
-                            cv::FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0, 0, 255), 2);
+                            cv::FONT_HERSHEY_SIMPLEX, 0.8, color, 2);
             }
         }
         // ===== 结束叠加文本绘制 =====

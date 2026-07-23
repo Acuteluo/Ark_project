@@ -1,0 +1,43 @@
+[2026-07-24 03:04:00.498] [debug] ================= [CONFIG LOADED] =================
+[2026-07-24 03:04:00.498] [debug]   Mode: PC
+[2026-07-24 03:04:00.498] [debug]   Camera ID : 2
+[2026-07-24 03:04:00.498] [debug]   Target Res: 1280x720
+[2026-07-24 03:04:00.498] [debug]   Target Fmt: MJPG
+[2026-07-24 03:04:00.498] [debug]   Target Brightness: 0
+[2026-07-24 03:04:00.498] [debug]   Target Contrast: 0
+[2026-07-24 03:04:00.498] [debug]   Model Path: ../models/detect.prototxt | ../models/detect.caffemodel | ../models/sr.prototxt | ../models/sr.caffemodel
+
+[2026-07-24 03:04:00.498] [debug]   Stream        : Port=5000, Res=960x540, Quality=60
+[2026-07-24 03:04:00.498] [debug] ===================================================
+[2026-07-24 03:04:00.501] [info] [qrcode_scanner.cpp] 微信模型加载成功
+[2026-07-24 03:04:00.697] [debug] 
+[2026-07-24 03:04:00.697] [debug] ================= [ACTUAL CAMERA STATUS] =================
+[2026-07-24 03:04:00.697] [debug]   Backend API   : V4L2
+[2026-07-24 03:04:00.697] [debug]   Resolution    : 1280x720
+[2026-07-24 03:04:00.698] [debug]   FPS           : 30
+[2026-07-24 03:04:00.698] [debug]   Video Format  : MJPG
+[2026-07-24 03:04:00.698] [debug]   Exposure      : 156
+[2026-07-24 03:04:00.698] [debug]   Brightness    : 0
+[2026-07-24 03:04:00.698] [debug]   Contrast      : 0
+[2026-07-24 03:04:00.698] [debug] ==========================================================
+[2026-07-24 03:04:00.698] [debug] [main.cpp] 相机初始化完毕, 按 'ESC' 或 'q' 退出
+
+[2026-07-24 03:04:00.698] [debug] ================= [SERIAL STATUS] =================
+[2026-07-24 03:04:00.698] [info] [serial_port.cpp] 串口 /dev/ttyACM0 打开成功，波特率: 115200
+[2026-07-24 03:04:00.698] [info]   is_serial_open: SUCCESS
+[2026-07-24 03:04:00.698] [debug]   Port Name     : /dev/ttyACM0
+[2026-07-24 03:04:00.698] [debug]   Baud Rate     : 115200
+[2026-07-24 03:04:00.698] [debug] ===================================================
+
+[2026-07-24 03:04:00.698] [info] [HttpStream] HTTP 服务器已启动，端口: 5000
+[2026-07-24 03:04:00.698] [info] [SERIAL THREAD] 相机 OK, 串口 OK, 有效信息 NO, 发送 255 and 255 SUCCESSED
+[2026-07-24 03:04:00.698] [info] 本机局域网 IP: 10.62.146.83  (接口: wlp0s20f3)
+[2026-07-24 03:04:00.698] [debug] [main.cpp] starting 3 threads...
+
+[2026-07-24 03:04:00.698] [info] [HttpStream] 服务器正在 0.0.0.0:5000 监听
+[2026-07-24 03:04:40.504] [debug] 
+
+[2026-07-24 03:04:40.504] [warning] [main.cpp] 捕捉到退出信号(SIGINT)，准备退出程序...
+
+[2026-07-24 03:04:40.515] [info] [HttpStream] HTTP 服务器已停止。
+[2026-07-24 03:04:40.554] [warning] [serial_port.cpp] 串口已关闭。
