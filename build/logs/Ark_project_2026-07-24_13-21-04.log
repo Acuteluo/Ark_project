@@ -1,0 +1,80 @@
+[2026-07-24 13:21:04.875] [debug] ================= [CONFIG LOADED] =================
+[2026-07-24 13:21:04.875] [debug]   Mode: Raspberry Pi
+[2026-07-24 13:21:04.875] [debug]   Camera ID : 0
+[2026-07-24 13:21:04.875] [debug]   Target Res: 1280x720
+[2026-07-24 13:21:04.875] [debug]   Target Fmt: MJPG
+[2026-07-24 13:21:04.875] [debug]   Target Brightness: 0
+[2026-07-24 13:21:04.875] [debug]   Target Contrast: 30
+[2026-07-24 13:21:04.875] [debug]   Model Path: ../models/detect.prototxt | ../models/detect.caffemodel | ../models/sr.prototxt | ../models/sr.caffemodel
+
+[2026-07-24 13:21:04.875] [debug]   Stream        : Port=5000, Res=640x360, Quality=60
+[2026-07-24 13:21:04.875] [debug] ===================================================
+[2026-07-24 13:21:04.879] [info] [qrcode_scanner.cpp] 微信模型加载成功
+[2026-07-24 13:21:05.001] [debug] 
+[2026-07-24 13:21:05.001] [debug] ================= [ACTUAL CAMERA STATUS] =================
+[2026-07-24 13:21:05.001] [debug]   Backend API   : V4L2
+[2026-07-24 13:21:05.001] [debug]   Resolution    : 1280x720
+[2026-07-24 13:21:05.001] [debug]   FPS           : 30
+[2026-07-24 13:21:05.001] [debug]   Video Format  : MJPG
+[2026-07-24 13:21:05.001] [debug]   Exposure      : 166
+[2026-07-24 13:21:05.001] [debug]   Brightness    : 0
+[2026-07-24 13:21:05.001] [debug]   Contrast      : 30
+[2026-07-24 13:21:05.001] [debug] ==========================================================
+[2026-07-24 13:21:05.001] [debug] [main.cpp] 相机初始化完毕, 按 'Ctrl+C' 退出
+
+[2026-07-24 13:21:05.001] [debug] ================= [SERIAL STATUS] =================
+[2026-07-24 13:21:05.001] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:21:05.001] [error]   is_serial_open: FAILED
+[2026-07-24 13:21:05.001] [debug] ===================================================
+
+[2026-07-24 13:21:05.002] [info] [HttpStream] HTTP 服务器已启动，端口: 5000
+[2026-07-24 13:21:05.002] [info] [HttpStream] 服务器正在 0.0.0.0:5000 监听
+[2026-07-24 13:21:05.002] [info] 本机局域网 IP: 10.62.146.83  (接口: wlp0s20f3)
+[2026-07-24 13:21:05.002] [debug] [main.cpp] starting 3 threads...
+
+[2026-07-24 13:21:05.002] [info] [SERIAL THREAD] 相机 OK, 串口 ERROR, 有效信息 NO, 发送 255 and 255 FAILED
+[2026-07-24 13:21:05.385] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:21:05.385] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:21:05.890] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:21:05.890] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:21:06.395] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:21:06.395] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:21:06.896] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:21:06.896] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:21:07.404] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:21:07.404] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:21:07.912] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:21:07.912] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:21:08.419] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:21:08.419] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:21:08.923] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:21:08.923] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:21:09.428] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:21:09.428] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:21:09.934] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:21:09.934] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:21:10.439] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:21:10.439] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:21:10.945] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:21:10.945] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:21:11.451] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:21:11.451] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:21:11.684] [debug] 
+
+[2026-07-24 13:21:11.684] [warning] [main.cpp] 捕捉到退出信号(SIGINT)，准备退出程序...
+
+[2026-07-24 13:21:11.725] [info] [HttpStream] HTTP 服务器已停止。

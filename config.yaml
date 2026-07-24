@@ -2,7 +2,7 @@
 ---
 # 相机设置
 Camera:
-  DeviceID: 2         # 笔记本自带摄像头通常为 0，外接USB相机为 2，树莓派为 0
+  DeviceID: 0         # 笔记本自带摄像头通常为 0，外接USB相机为 2，树莓派为 0
   Width: 1280         # 宽度 (1920 / 1280 / 800 / 640)
   Height: 720         # 高度 (1080 / 720  / 600 / 480)
   Format: "MJPG"      # 强制使用 MJPG 压缩流以突破 USB 2.0 带宽限制获取高帧率
@@ -23,11 +23,11 @@ Port:
 
 # 模式设置 0=树莓派 1=PC
 Mode:
-  PCMode: 1
+  PCMode: 0
 
 # 图传设置
 Stream:
   Port: 5000
-  Width: 960
-  Height: 540
+  Width: 640
+  Height: 360
   Quality: 60    # JPG 压缩质量 (0-100)，推荐 50-70

@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <cstring>
 #include <chrono>
+#include <sstream>   // 用于构建 HTML
+#include <string>
 
 // ---------- 构造与析构 ----------
 HttpStreamThread::HttpStreamThread(int port, int width, int height, int quality)
@@ -142,130 +144,272 @@ void HttpStreamThread::Run()
 // ---------- 处理单个客户端 ----------
 void HttpStreamThread::HandleClient(int client_sock) 
 {
-    // 1. 读取 HTTP 请求，只识别 GET /
+    // 1. 读取 HTTP 请求行
     char buffer[1024];
     int n = recv(client_sock, buffer, sizeof(buffer) - 1, 0);
     if (n <= 0) 
+    { 
+        close(client_sock); 
+        return; 
+    }
+    buffer[n] = '\0';
+
+    // 2. 解析请求方法、路径
+    char method[16], path[256];
+    if (sscanf(buffer, "%s %s", method, path) != 2) 
     {
         close(client_sock);
         return;
     }
-    buffer[n] = '\0';
-
-    // 如果不是 GET /，返回 404 并关闭
-    if (strncmp(buffer, "GET /", 5) != 0) 
+    // 只支持 GET
+    if (strcmp(method, "GET") != 0) 
     {
-        const char* resp = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
+        const char* resp = "HTTP/1.1 405 Method Not Allowed\r\nContent-Length: 0\r\n\r\n";
         send(client_sock, resp, strlen(resp), 0);
         close(client_sock);
         return;
     }
 
-    // 2. 发送 HTTP 响应头（MJPEG 流）
-    const char* header = "HTTP/1.1 200 OK\r\n"
-                         "Connection: close\r\n"
-                         "Content-Type: multipart/x-mixed-replace; boundary=--frame\r\n\r\n";
-    if (send(client_sock, header, strlen(header), 0) < 0) 
+    // ========== 路径 /viewer ：返回带视频和文本的 HTML 页面 ==========
+    if (strcmp(path, "/viewer") == 0) 
     {
+        std::string html = R"raw(
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ark 图传</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 6px;          /* 减小外边距，增加可用空间 */
+        }
+        #video-container {
+            width: 100%;
+            flex: 0 0 88%;          /* 从75%提升到88% */
+            max-height: 88vh;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+        }
+        #video-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        #info-panel {
+            width: 100%;
+            flex: 0 0 auto;
+            min-height: 28px;
+            margin-top: 4px;        /* 减小上边距 */
+            background: #2a2a2a;
+            border-radius: 10px;
+            border-left: 4px solid #ffaa00;
+            padding: 3px 12px;
+            text-align: left;
+            font-size: 1rem;
+            line-height: 1.4;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .info-line {
+            margin: 1px 0;
+            color: #ffcc66;
+            font-weight: bold;
+            word-break: break-all;
+        }
+        .info-error {
+            color: #ff6666;
+            font-weight: normal;
+            font-size: 0.85rem;
+        }
+        @media (max-width: 480px) {
+            body { padding: 4px; }
+            #video-container { flex: 0 0 82%; }   /* 手机版也相应放大 */
+            #info-panel { font-size: 0.85rem; padding: 2px 10px; min-height: 24px; margin-top: 3px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="video-container">
+        <img src="/" alt="视频流" id="videoFeed" />
+    </div>
+    <div id="info-panel">
+        <div class="info-line" id="info1">等待数据...</div>
+        <div class="info-line" id="info2">等待数据...</div>
+    </div>
+
+    <script>
+        (function() {
+            const el1 = document.getElementById('info1');
+            const el2 = document.getElementById('info2');
+
+            function fetchInfo() {
+                fetch('/info', { cache: 'no-store' })
+                    .then(res => {
+                        if (!res.ok) throw new Error('HTTP ' + res.status);
+                        return res.json();
+                    })
+                    .then(data => {
+                        el1.textContent = data.info1 || '—';
+                        el2.textContent = data.info2 || '—';
+                        el1.className = 'info-line';
+                        el2.className = 'info-line';
+                    })
+                    .catch(err => {
+                        el1.textContent = '⚠️ 错误: ' + err.message;
+                        el2.textContent = '尝试刷新';
+                        el1.className = 'info-line info-error';
+                        el2.className = 'info-line info-error';
+                        console.error('[Ark] fetch error:', err);
+                    });
+            }
+
+            setInterval(fetchInfo, 150);
+            fetchInfo();
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) fetchInfo();
+            });
+        })();
+    </script>
+</body>
+</html>
+)raw";
+
+        std::string response = "HTTP/1.1 200 OK\r\n"
+                               "Content-Type: text/html\r\n"
+                               "Content-Length: " + std::to_string(html.size()) + "\r\n"
+                               "Connection: close\r\n\r\n" + html;
+        send(client_sock, response.c_str(), response.size(), 0);
         close(client_sock);
         return;
     }
 
-    // 3. 持续发送帧
-    while (is_running_) 
+    // ========== 路径 /info ：返回 JSON 字符串 ==========
+    if (strcmp(path, "/info") == 0) 
     {
-        cv::Mat frame;
-        {
-            // 等待新帧（超时 100ms，以便检查 is_running_）
-            std::unique_lock<std::mutex> lock(mutex_);
-            if (!cv_.wait_for(lock, std::chrono::milliseconds(100),
-                              [this] { return has_new_frame_ || !is_running_; })) {
-                continue;   // 超时继续循环
-            }
-            if (!is_running_) break;
-            if (!has_new_frame_) continue;
-
-            // 复制最新帧（为了不占用锁太久）
-            frame = latest_frame_.clone();
-            has_new_frame_ = false;
-        }
-
-        // 4. 缩放图像（按配置尺寸）
-        cv::Mat resized;
-        cv::resize(frame, resized, cv::Size(width_, height_));
-
-        // ===== 新增：绘制 FPS =====
-        // 更新帧计数
-        fps_frame_count_++;
-        auto now = std::chrono::steady_clock::now();
-        double elapsed = std::chrono::duration<double>(now - fps_last_time_).count();
-        if (elapsed >= 0.50) 
-        {
-            fps_ = fps_frame_count_ / elapsed;
-            fps_frame_count_ = 0;
-            fps_last_time_ = now;
-        }
-
-        char buf[32];
-        snprintf(buf, sizeof(buf), "FPS: %.1f", fps_);
-
-        int fontFace = cv::FONT_HERSHEY_SIMPLEX;
-        double fontScale = 1.0;
-        int thickness = 2;
-        int baseline;
-        cv::Size textSize = cv::getTextSize(buf, fontFace, fontScale, thickness, &baseline);
-
-        // 右上角：右边距 20 像素，上边距 20 像素
-        int text_x = resized.cols - textSize.width - 20;
-        int text_y = textSize.height + 20;   // 因为文字原点在基线，加上高度保证完全显示
-
-        cv::putText(resized, buf, cv::Point(text_x, text_y), fontFace, fontScale, cv::Scalar(0, 165, 255), thickness);
-
-
-        // 打印文本信息
-        // ===== 绘制叠加文本（左下角）=====
+        std::string info1, info2;
         {
             std::lock_guard<std::mutex> lock(text_mutex_);
-            cv::Scalar color(255, 255, 0);
-            if (!overlay_text1_.empty()) 
-            {
-                cv::putText(resized, overlay_text1_, cv::Point(10, 30),
-                            cv::FONT_HERSHEY_SIMPLEX, 0.8, color, 2);
-            }
-            if (!overlay_text2_.empty()) 
-            {
-                cv::putText(resized, overlay_text2_, cv::Point(10, 60),
-                            cv::FONT_HERSHEY_SIMPLEX, 0.8, color, 2);
-            }
+            info1 = overlay_text1_;
+            info2 = overlay_text2_;
         }
-        // ===== 结束叠加文本绘制 =====
-
-
-        // 5. 编码为 JPEG
-        std::vector<uchar> jpeg_buffer;
-        std::vector<int> params = {cv::IMWRITE_JPEG_QUALITY, quality_};
-        if (!cv::imencode(".jpg", resized, jpeg_buffer, params)) 
-        {
-            LOG_ERROR("[HttpStream] JPEG 编码失败");
-            continue;
-        }
-
-        // 6. 构造 MJPEG 片段（边界 + 头 + 数据 + 换行）
-        std::string chunk_header = "--frame\r\n"
-                                   "Content-Type: image/jpeg\r\n"
-                                   "Content-Length: " + std::to_string(jpeg_buffer.size()) + "\r\n\r\n";
-
-        // 发送片段头
-        if (send(client_sock, chunk_header.c_str(), chunk_header.size(), 0) < 0) break;
-        // 发送 JPEG 数据
-        if (send(client_sock, reinterpret_cast<const char*>(jpeg_buffer.data()), jpeg_buffer.size(), 0) < 0) break;
-        // 发送结束换行
-        if (send(client_sock, "\r\n", 2, 0) < 0) break;
-
-        // 7. 控制帧率（约 30fps，可根据需要调整）
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+        // 转义 JSON 中的特殊字符（简单处理，若包含引号则需要转义）
+        std::string json = "{\"info1\":\"" + info1 + "\",\"info2\":\"" + info2 + "\"}";
+        std::string response = "HTTP/1.1 200 OK\r\n"
+                               "Content-Type: application/json\r\n"
+                               "Content-Length: " + std::to_string(json.size()) + "\r\n"
+                               "Connection: close\r\n\r\n" + json;
+        send(client_sock, response.c_str(), response.size(), 0);
+        close(client_sock);
+        return;
     }
 
-    // 关闭连接
+    // ========== 路径 / ：原有视频流 ==========
+    if (strcmp(path, "/") == 0) 
+    {
+        // 原有视频流处理逻辑（完全保留你现在的代码，从发送响应头开始）
+        const char* header = "HTTP/1.1 200 OK\r\n"
+                             "Connection: close\r\n"
+                             "Content-Type: multipart/x-mixed-replace; boundary=--frame\r\n\r\n";
+        if (send(client_sock, header, strlen(header), 0) < 0) 
+        {
+            close(client_sock);
+            return;
+        }
+
+        while (is_running_) 
+        {
+            cv::Mat frame;
+            {
+                std::unique_lock<std::mutex> lock(mutex_);
+                if (!cv_.wait_for(lock, std::chrono::milliseconds(100),
+                                  [this] { return has_new_frame_ || !is_running_; })) {
+                    continue;
+                }
+                if (!is_running_) break;
+                if (!has_new_frame_) continue;
+                frame = latest_frame_.clone();
+                has_new_frame_ = false;
+            }
+
+            cv::Mat rotated;
+            cv::rotate(frame, rotated, cv::ROTATE_90_COUNTERCLOCKWISE);  // 逆时针旋转90度
+            cv::Mat resized;
+            cv::resize(rotated, resized, cv::Size(height_, width_));      // 宽高互换
+
+            // ----- 绘制 FPS 和叠加文本（同你的现有代码）-----
+            fps_frame_count_++;
+            auto now = std::chrono::steady_clock::now();
+            double elapsed = std::chrono::duration<double>(now - fps_last_time_).count();
+            if (elapsed >= 0.50) 
+            {
+                fps_ = fps_frame_count_ / elapsed;
+                fps_frame_count_ = 0;
+                fps_last_time_ = now;
+            }
+            char buf[32];
+            snprintf(buf, sizeof(buf), "FPS: %.1f", fps_);
+            cv::putText(resized, buf, 
+                cv::Point(resized.cols - 115, 35),  // 微调Y坐标
+                cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(0, 165, 255), 2);
+
+            {
+                std::lock_guard<std::mutex> lock(text_mutex_);
+                if (!overlay_text1_.empty()) 
+                {
+                    cv::putText(resized, overlay_text1_, cv::Point(10, 35),
+                                cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(255, 255, 0), 2);
+                }
+                if (!overlay_text2_.empty()) 
+                {
+                    cv::putText(resized, overlay_text2_, cv::Point(10, 70),
+                                cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(255, 255, 0), 2);
+                }
+            }
+            // ------------------------------------------------
+
+            std::vector<uchar> jpeg_buffer;
+            std::vector<int> params = {cv::IMWRITE_JPEG_QUALITY, quality_};
+            if (!cv::imencode(".jpg", resized, jpeg_buffer, params)) 
+            {
+                LOG_ERROR("[HttpStream] JPEG 编码失败");
+                continue;
+            }
+
+            std::string chunk_header = "--frame\r\n"
+                                       "Content-Type: image/jpeg\r\n"
+                                       "Content-Length: " + std::to_string(jpeg_buffer.size()) + "\r\n\r\n";
+            if (send(client_sock, chunk_header.c_str(), chunk_header.size(), 0) < 0) break;
+            if (send(client_sock, reinterpret_cast<const char*>(jpeg_buffer.data()), jpeg_buffer.size(), 0) < 0) break;
+            if (send(client_sock, "\r\n", 2, 0) < 0) break;
+
+            // 控制帧率（可调）
+            std::this_thread::sleep_for(std::chrono::milliseconds(16));
+        }
+        close(client_sock);
+        return;
+    }
+
+    // ========== 其他路径 404 ==========
+    const char* resp = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
+    send(client_sock, resp, strlen(resp), 0);
     close(client_sock);
 }

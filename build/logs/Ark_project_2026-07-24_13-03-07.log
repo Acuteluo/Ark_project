@@ -1,0 +1,108 @@
+[2026-07-24 13:03:07.843] [debug] ================= [CONFIG LOADED] =================
+[2026-07-24 13:03:07.843] [debug]   Mode: Raspberry Pi
+[2026-07-24 13:03:07.843] [debug]   Camera ID : 0
+[2026-07-24 13:03:07.843] [debug]   Target Res: 1280x720
+[2026-07-24 13:03:07.843] [debug]   Target Fmt: MJPG
+[2026-07-24 13:03:07.843] [debug]   Target Brightness: 0
+[2026-07-24 13:03:07.843] [debug]   Target Contrast: 30
+[2026-07-24 13:03:07.843] [debug]   Model Path: ../models/detect.prototxt | ../models/detect.caffemodel | ../models/sr.prototxt | ../models/sr.caffemodel
+
+[2026-07-24 13:03:07.843] [debug]   Stream        : Port=5000, Res=640x360, Quality=60
+[2026-07-24 13:03:07.843] [debug] ===================================================
+[2026-07-24 13:03:07.847] [info] [qrcode_scanner.cpp] 微信模型加载成功
+[2026-07-24 13:03:07.970] [debug] 
+[2026-07-24 13:03:07.970] [debug] ================= [ACTUAL CAMERA STATUS] =================
+[2026-07-24 13:03:07.970] [debug]   Backend API   : V4L2
+[2026-07-24 13:03:07.970] [debug]   Resolution    : 1280x720
+[2026-07-24 13:03:07.970] [debug]   FPS           : 30
+[2026-07-24 13:03:07.970] [debug]   Video Format  : MJPG
+[2026-07-24 13:03:07.970] [debug]   Exposure      : 166
+[2026-07-24 13:03:07.970] [debug]   Brightness    : 0
+[2026-07-24 13:03:07.970] [debug]   Contrast      : 30
+[2026-07-24 13:03:07.970] [debug] ==========================================================
+[2026-07-24 13:03:07.970] [debug] [main.cpp] 相机初始化完毕, 按 'Ctrl+C' 退出
+
+[2026-07-24 13:03:07.970] [debug] ================= [SERIAL STATUS] =================
+[2026-07-24 13:03:07.970] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:07.970] [error]   is_serial_open: FAILED
+[2026-07-24 13:03:07.970] [debug] ===================================================
+
+[2026-07-24 13:03:07.970] [info] [HttpStream] HTTP 服务器已启动，端口: 5000
+[2026-07-24 13:03:07.971] [info] [SERIAL THREAD] 相机 OK, 串口 ERROR, 有效信息 NO, 发送 255 and 255 FAILED
+[2026-07-24 13:03:07.971] [info] 本机局域网 IP: 10.62.146.83  (接口: wlp0s20f3)
+[2026-07-24 13:03:07.971] [debug] [main.cpp] starting 3 threads...
+
+[2026-07-24 13:03:07.971] [info] [HttpStream] 服务器正在 0.0.0.0:5000 监听
+[2026-07-24 13:03:08.343] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:08.343] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:08.851] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:08.851] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:09.361] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:09.361] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:09.866] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:09.866] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:10.372] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:10.372] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:10.878] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:10.878] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:11.384] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:11.384] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:11.889] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:11.889] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:12.396] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:12.396] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:12.902] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:12.902] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:13.409] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:13.409] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:13.916] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:13.916] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:14.421] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:14.421] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:14.926] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:14.926] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:15.431] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:15.431] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:15.937] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:15.938] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:16.443] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:16.443] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:16.950] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:16.950] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:17.455] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:17.456] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:17.960] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:17.960] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:18.466] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:18.466] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:18.971] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:18.972] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:19.476] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:19.476] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+
+[2026-07-24 13:03:19.980] [warning] [serial_port.cpp] 尝试重新打开串口...
+[2026-07-24 13:03:19.980] [error] [serial_port.cpp] 无法打开串口 /dev/ttyACM0
+

@@ -246,6 +246,7 @@ int main()
 
     // 注册系统信号，方便在树莓派后台运行时 Ctrl+C 正常关闭硬件
     signal(SIGINT, signalHandler);
+    signal(SIGPIPE, SIG_IGN);   // 忽略网络断开导致的管道破裂信号
 
     // 1. 读取配置文件
     std::string config_path = "../config.yaml";
